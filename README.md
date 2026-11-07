@@ -1,4 +1,4 @@
-# MarketingOne
+# OmniPromote
 
 A UAE marketplace that connects **event organizers** with **sponsors**, in English and Arabic.
 This is **Phase 1: event sponsorship**.
@@ -11,7 +11,7 @@ Built with Next.js 15, Tailwind CSS, Supabase (database, login, file storage) an
 - **Admin** reviews every event before it goes live, and can verify companies.
 - **Sponsors** browse and filter events (emirate, category, dates, budget, audience size) and send proposals.
 - **Chat** between both sides. Phone numbers, emails, links and social handles (English and Arabic) are hidden automatically, and every attempt is logged for the admin.
-- **Deals**: when an organizer accepts, the sponsor gets an invoice (with 5% VAT) to pay MarketingOne by bank transfer.
+- **Deals**: when an organizer accepts, the sponsor gets an invoice (with 5% VAT) to pay OmniPromote by bank transfer.
   Admin marks it paid, then contact details are shared between the two sides.
 - **Proof of delivery**: organizer uploads photos/videos/reports, sponsor approves, admin pays the organizer
   the price minus commission (default 15%). The organizer's first deal is commission-free (Founding Partner offer).
@@ -28,7 +28,7 @@ Built with Next.js 15, Tailwind CSS, Supabase (database, login, file storage) an
 1. In Supabase, create a new project (region: closest to UAE, e.g. Frankfurt or Mumbai).
 2. Open **SQL Editor**, paste everything from `supabase/migrations/20261107000001_phase1_sponsorship.sql`, and run it.
 3. (Optional demo data) Paste and run `supabase/seed.sql`. It adds 10 sample UAE events and three demo logins
-   (password `Demo1234!`): `organizer1@demo.marketingone.ae`, `organizer2@demo.marketingone.ae`, `sponsor@demo.marketingone.ae`.
+   (password `Demo1234!`): `organizer1@demo.omnipromote.ae`, `organizer2@demo.omnipromote.ae`, `sponsor@demo.omnipromote.ae`.
 4. In **Authentication → URL Configuration**, set Site URL to `http://localhost:3000` and add
    `http://localhost:3000/auth/callback` to Redirect URLs (add your real domain later too).
 5. (Optional) Turn on Google login in **Authentication → Providers → Google**.

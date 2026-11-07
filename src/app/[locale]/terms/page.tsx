@@ -4,8 +4,8 @@ import { LegalPage, type LegalSection } from "@/components/LegalPage";
 
 const en: LegalSection[] = [
   {
-    heading: "About MarketingOne",
-    body: "MarketingOne is an online marketplace operated by MarketingOne FZE (United Arab Emirates) that introduces event organizers to sponsors. We are not a party to the event itself.",
+    heading: "About OmniPromote",
+    body: "OmniPromote is an online marketplace operated by OmniPromote FZE (United Arab Emirates) that introduces event organizers to sponsors. We are not a party to the event itself.",
   },
   {
     heading: "Accounts",
@@ -17,15 +17,15 @@ const en: LegalSection[] = [
   },
   {
     heading: "Payments and commission",
-    body: "Sponsors pay the full agreed amount, plus VAT where applicable, to MarketingOne against our invoice. After the event and approval of proof of delivery, MarketingOne pays the organizer the agreed amount minus the platform commission shown on the deal. The commission rate is shown before a proposal is accepted.",
+    body: "Sponsors pay the full agreed amount, plus VAT where applicable, to OmniPromote against our invoice. After the event and approval of proof of delivery, OmniPromote pays the organizer the agreed amount minus the platform commission shown on the deal. The commission rate is shown before a proposal is accepted.",
   },
   {
     heading: "Communication on the platform",
-    body: "Until a sponsor has paid for a deal, all communication must take place on MarketingOne. Phone numbers, emails, links and social media handles are hidden automatically, and repeated attempts to share them may lead to suspension.",
+    body: "Until a sponsor has paid for a deal, all communication must take place on OmniPromote. Phone numbers, emails, links and social media handles are hidden automatically, and repeated attempts to share them may lead to suspension.",
   },
   {
     heading: "Non-circumvention",
-    body: "For 24 months after MarketingOne introduces an organizer and a sponsor to each other, neither party may enter into any sponsorship, advertising or similar agreement with the other outside the platform. If they do, the organizer must pay MarketingOne the commission it would have earned on that agreement, and MarketingOne may also suspend both accounts.",
+    body: "For 24 months after OmniPromote introduces an organizer and a sponsor to each other, neither party may enter into any sponsorship, advertising or similar agreement with the other outside the platform. If they do, the organizer must pay OmniPromote the commission it would have earned on that agreement, and OmniPromote may also suspend both accounts.",
   },
   {
     heading: "Proof of delivery and disputes",
@@ -33,11 +33,11 @@ const en: LegalSection[] = [
   },
   {
     heading: "Cancellations and refunds",
-    body: "If an event is cancelled by the organizer, the sponsor receives a full refund of amounts paid to MarketingOne. Other cancellations are handled case by case.",
+    body: "If an event is cancelled by the organizer, the sponsor receives a full refund of amounts paid to OmniPromote. Other cancellations are handled case by case.",
   },
   {
     heading: "Liability",
-    body: "MarketingOne is not responsible for the conduct of organizers or sponsors or for the outcome of events. Our total liability is limited to the commission we earned on the deal in question.",
+    body: "OmniPromote is not responsible for the conduct of organizers or sponsors or for the outcome of events. Our total liability is limited to the commission we earned on the deal in question.",
   },
   {
     heading: "Governing law",
@@ -47,8 +47,8 @@ const en: LegalSection[] = [
 
 const ar: LegalSection[] = [
   {
-    heading: "عن ماركتنج ون",
-    body: "ماركتنج ون سوق إلكتروني تديره شركة ماركتنج ون م.م.ح (الإمارات العربية المتحدة) يعرّف منظمي الفعاليات بالرعاة. لسنا طرفًا في الفعالية نفسها.",
+    heading: "عن أومني بروموت",
+    body: "أومني بروموت سوق إلكتروني تديره شركة أومني بروموت م.م.ح (الإمارات العربية المتحدة) يعرّف منظمي الفعاليات بالرعاة. لسنا طرفًا في الفعالية نفسها.",
   },
   {
     heading: "الحسابات",
@@ -60,15 +60,15 @@ const ar: LegalSection[] = [
   },
   {
     heading: "المدفوعات والعمولة",
-    body: "يدفع الراعي كامل المبلغ المتفق عليه مع ضريبة القيمة المضافة عند انطباقها إلى ماركتنج ون بموجب فاتورتنا. وبعد الفعالية والموافقة على إثبات التنفيذ، تدفع ماركتنج ون للمنظم المبلغ المتفق عليه مخصومًا منه عمولة المنصة الموضحة في الصفقة.",
+    body: "يدفع الراعي كامل المبلغ المتفق عليه مع ضريبة القيمة المضافة عند انطباقها إلى أومني بروموت بموجب فاتورتنا. وبعد الفعالية والموافقة على إثبات التنفيذ، تدفع أومني بروموت للمنظم المبلغ المتفق عليه مخصومًا منه عمولة المنصة الموضحة في الصفقة.",
   },
   {
     heading: "التواصل عبر المنصة",
-    body: "حتى يدفع الراعي قيمة الصفقة، يجب أن يتم كل التواصل عبر ماركتنج ون. يتم إخفاء أرقام الهاتف والبريد الإلكتروني والروابط وحسابات التواصل الاجتماعي تلقائيًا، وقد تؤدي المحاولات المتكررة لمشاركتها إلى تعليق الحساب.",
+    body: "حتى يدفع الراعي قيمة الصفقة، يجب أن يتم كل التواصل عبر أومني بروموت. يتم إخفاء أرقام الهاتف والبريد الإلكتروني والروابط وحسابات التواصل الاجتماعي تلقائيًا، وقد تؤدي المحاولات المتكررة لمشاركتها إلى تعليق الحساب.",
   },
   {
     heading: "عدم التحايل",
-    body: "لمدة ٢٤ شهرًا بعد أن تعرّف ماركتنج ون منظمًا براعٍ، لا يجوز لأي منهما إبرام أي اتفاقية رعاية أو إعلان أو ما شابه مع الآخر خارج المنصة. وفي حال حدوث ذلك، يلتزم المنظم بدفع العمولة التي كانت ستستحقها ماركتنج ون، ويحق لماركتنج ون تعليق الحسابين.",
+    body: "لمدة ٢٤ شهرًا بعد أن تعرّف أومني بروموت منظمًا براعٍ، لا يجوز لأي منهما إبرام أي اتفاقية رعاية أو إعلان أو ما شابه مع الآخر خارج المنصة. وفي حال حدوث ذلك، يلتزم المنظم بدفع العمولة التي كانت ستستحقها أومني بروموت، ويحق لأومني بروموت تعليق الحسابين.",
   },
   {
     heading: "إثبات التنفيذ والنزاعات",
@@ -76,11 +76,11 @@ const ar: LegalSection[] = [
   },
   {
     heading: "الإلغاء والاسترداد",
-    body: "إذا ألغى المنظم الفعالية، يسترد الراعي كامل المبالغ المدفوعة إلى ماركتنج ون. وتُعالج حالات الإلغاء الأخرى كلٌّ على حدة.",
+    body: "إذا ألغى المنظم الفعالية، يسترد الراعي كامل المبالغ المدفوعة إلى أومني بروموت. وتُعالج حالات الإلغاء الأخرى كلٌّ على حدة.",
   },
   {
     heading: "المسؤولية",
-    body: "ماركتنج ون غير مسؤولة عن تصرفات المنظمين أو الرعاة أو عن نتائج الفعاليات. وتقتصر مسؤوليتنا الإجمالية على العمولة التي حصلنا عليها من الصفقة المعنية.",
+    body: "أومني بروموت غير مسؤولة عن تصرفات المنظمين أو الرعاة أو عن نتائج الفعاليات. وتقتصر مسؤوليتنا الإجمالية على العمولة التي حصلنا عليها من الصفقة المعنية.",
   },
   {
     heading: "القانون الواجب التطبيق",

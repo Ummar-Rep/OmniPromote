@@ -104,7 +104,7 @@ export async function saveSettings(form: FormData) {
   const { error } = await supabase
     .from("settings")
     .update({
-      legal_name: str(form, "legal_name") ?? "MarketingOne FZE",
+      legal_name: str(form, "legal_name") ?? "OmniPromote FZE",
       address: str(form, "address") ?? "United Arab Emirates",
       trn: str(form, "trn"),
       bank_name: str(form, "bank_name"),
@@ -113,7 +113,7 @@ export async function saveSettings(form: FormData) {
       swift: str(form, "swift"),
       default_commission_rate: (num(form, "default_commission") ?? 15) / 100,
       vat_rate: (num(form, "vat_rate") ?? 5) / 100,
-      invoice_prefix: str(form, "invoice_prefix") ?? "MO",
+      invoice_prefix: str(form, "invoice_prefix") ?? "OP",
       founding_partner_offer: form.get("founding_partner_offer") === "on",
       updated_at: new Date().toISOString(),
     })

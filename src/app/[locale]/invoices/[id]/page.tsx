@@ -42,7 +42,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ locale
         <div className="flex flex-wrap justify-between gap-6 border-b border-navy-100 pb-6">
           <div>
             <p className="text-2xl font-bold">
-              Marketing<span className="text-gold-500">One</span>
+              Omni<span className="text-gold-500">Promote</span>
             </p>
             <p className="mt-2 text-sm text-navy-700">{settings.legal_name}</p>
             <p className="text-sm text-navy-500">{settings.address}</p>

@@ -1,6 +1,6 @@
 -- Demo data: 2 organizers, 1 sponsor, 10 published UAE events with packages.
 -- Demo logins (password for all: Demo1234!):
---   organizer1@demo.marketingone.ae, organizer2@demo.marketingone.ae, sponsor@demo.marketingone.ae
+--   organizer1@demo.omnipromote.ae, organizer2@demo.omnipromote.ae, sponsor@demo.omnipromote.ae
 -- Safe to run once on a fresh project (SQL editor or `supabase db reset`).
 
 do $$
@@ -9,9 +9,9 @@ declare
 begin
   for u in
     select * from (values
-      ('11111111-1111-1111-1111-111111111111'::uuid, 'organizer1@demo.marketingone.ae', 'organizer', 'Gulf Events Co.'),
-      ('22222222-2222-2222-2222-222222222222'::uuid, 'organizer2@demo.marketingone.ae', 'organizer', 'Emirates Community Hub'),
-      ('33333333-3333-3333-3333-333333333333'::uuid, 'sponsor@demo.marketingone.ae', 'sponsor', 'Al Noor Hospital Group')
+      ('11111111-1111-1111-1111-111111111111'::uuid, 'organizer1@demo.omnipromote.ae', 'organizer', 'Gulf Events Co.'),
+      ('22222222-2222-2222-2222-222222222222'::uuid, 'organizer2@demo.omnipromote.ae', 'organizer', 'Emirates Community Hub'),
+      ('33333333-3333-3333-3333-333333333333'::uuid, 'sponsor@demo.omnipromote.ae', 'sponsor', 'Al Noor Hospital Group')
     ) as t(id, email, role, company)
   loop
     insert into auth.users (
