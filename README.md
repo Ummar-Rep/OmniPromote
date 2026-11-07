@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MarketingOne
 
-## Getting Started
+A UAE marketplace that connects **event organizers** with **sponsors**, in English and Arabic.
+This is **Phase 1: event sponsorship**.
 
-First, run the development server:
+Built with Next.js 15, Tailwind CSS, Supabase (database, login, file storage) and next-intl (English/Arabic).
 
+## What Phase 1 does
+
+- **Organizers** list events and sponsorship packages (fixed price, open to offers, or in-kind).
+- **Admin** reviews every event before it goes live, and can verify companies.
+- **Sponsors** browse and filter events (emirate, category, dates, budget, audience size) and send proposals.
+- **Chat** between both sides. Phone numbers, emails, links and social handles (English and Arabic) are hidden automatically, and every attempt is logged for the admin.
+- **Deals**: when an organizer accepts, the sponsor gets an invoice (with 5% VAT) to pay MarketingOne by bank transfer.
+  Admin marks it paid, then contact details are shared between the two sides.
+- **Proof of delivery**: organizer uploads photos/videos/reports, sponsor approves, admin pays the organizer
+  the price minus commission (default 15%). The organizer's first deal is commission-free (Founding Partner offer).
+- Printable bilingual invoices and payout statements.
+- Optional email notifications (Resend).
+
+## Set up (about 20 minutes)
+
+### 1. Install tools
+- [Node.js 20 or newer](https://nodejs.org)
+- A free [Supabase](https://supabase.com) account
+
+### 2. Create the database
+1. In Supabase, create a new project (region: closest to UAE, e.g. Frankfurt or Mumbai).
+2. Open **SQL Editor**, paste everything from `supabase/migrations/20261107000001_phase1_sponsorship.sql`, and run it.
+3. (Optional demo data) Paste and run `supabase/seed.sql`. It adds 10 sample UAE events and three demo logins
+   (password `Demo1234!`): `organizer1@demo.marketingone.ae`, `organizer2@demo.marketingone.ae`, `sponsor@demo.marketingone.ae`.
+4. In **Authentication → URL Configuration**, set Site URL to `http://localhost:3000` and add
+   `http://localhost:3000/auth/callback` to Redirect URLs (add your real domain later too).
+5. (Optional) Turn on Google login in **Authentication → Providers → Google**.
+
+### 3. Configure the app
 ```bash
+cp .env.example .env.local
+```
+Fill in the values from Supabase **Project Settings → API**.
+
+### 4. Run it
+```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Open http://localhost:3000.
+
+### 5. Make yourself admin
+Sign up on the site with your own email, then run this in the Supabase SQL Editor:
+```sql
+update public.profiles set role = 'admin', onboarded = true
+where id = (select id from auth.users where email = 'you@example.com');
+```
+Then go to **Admin → Settings** and enter your company name, TRN and bank details (they appear on invoices).
+
+## Deploy
+Push to GitHub, import the repo in [Vercel](https://vercel.com), add the same environment variables,
+and set `NEXT_PUBLIC_SITE_URL` to your domain. Add `https://yourdomain/auth/callback` to Supabase redirect URLs.
+
+## Project layout
+```
+messages/              English and Arabic text (en.json, ar.json)
+supabase/migrations/   Database tables, security rules, deal workflow
+supabase/seed.sql      Demo data
+src/app/[locale]/      Pages (every page works at /en/... and /ar/...)
+  events/              Browse + event detail + send proposal
+  dashboard/           Organizer and sponsor dashboards, event editor
+  proposals/[id]/      Proposal chat, accept/decline
+  deals/[id]/          Deal progress, proof upload, approval
+  invoices/[id]/       Printable invoice / payout statement
+  admin/               Approvals, companies, deals, contact attempts, settings
+src/lib/               Supabase clients, helpers, email
+src/components/        Shared UI
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How the money flow works
+| Step | Who | Status |
+|---|---|---|
+| Organizer accepts proposal | Organizer | Waiting for sponsor payment (invoice issued) |
+| Sponsor pays by bank transfer, admin confirms | Admin | Paid; contact details now shared |
+| Event happens, organizer uploads proof | Organizer | Proof uploaded |
+| Sponsor approves proof | Sponsor | Proof approved |
+| Admin transfers payout (price − commission) | Admin | Completed; payout statement issued |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Security rules live in the database (Row Level Security), so users cannot publish their own events,
+change commission, see the other side's contacts early, or make themselves admin, even by calling the API directly.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Next phases
+2. Online card payments and automatic payouts (Stripe Connect or a UAE gateway)
+3. Billboards and digital screens with map search
+4. Influencer marketing through partner agencies
+5. Featured listings, subscriptions, reviews, analytics
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> Legal pages (Terms, Privacy) are drafts. Have a UAE lawyer review them before launch.
