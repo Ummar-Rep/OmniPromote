@@ -22,7 +22,7 @@ export async function notifyUser(
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;color:#0b1a36">
       <p>${body.en}</p>
-      <p><a href="${link}" style="background:#c9a227;color:#0b1a36;padding:10px 16px;border-radius:6px;text-decoration:none">Open MarketingOne</a></p>
+      <p><a href="${link}" style="background:#c9a227;color:#0b1a36;padding:10px 16px;border-radius:6px;text-decoration:none">Open OmniPromote</a></p>
       <hr style="border:none;border-top:1px solid #ddd;margin:24px 0" />
       <p dir="rtl" style="text-align:right">${body.ar}</p>
     </div>`;
@@ -32,7 +32,7 @@ export async function notifyUser(
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        from: process.env.EMAIL_FROM ?? "MarketingOne <notifications@example.com>",
+        from: process.env.EMAIL_FROM ?? "OmniPromote <notifications@example.com>",
         to,
         subject: `${subject.en} | ${subject.ar}`,
         html,

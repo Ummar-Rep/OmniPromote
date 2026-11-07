@@ -6,6 +6,7 @@ const dealTone: Record<DealStatus, "gray" | "gold" | "green" | "red" | "blue"> =
   awaiting_sponsor_payment: "gold",
   sponsor_paid: "blue",
   proof_uploaded: "blue",
+  disputed: "red",
   proof_approved: "blue",
   organizer_paid: "green",
   cancelled: "red",

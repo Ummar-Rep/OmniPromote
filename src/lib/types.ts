@@ -5,7 +5,7 @@ export type EventStatus = "draft" | "pending_review" | "published" | "rejected" 
 export type PriceType = "fixed" | "open_offer" | "in_kind";
 export type ProposalStatus = "sent" | "accepted" | "rejected" | "withdrawn";
 export type DealStatus =
-  | "awaiting_sponsor_payment" | "sponsor_paid" | "proof_uploaded" | "proof_approved" | "organizer_paid" | "cancelled";
+  | "awaiting_sponsor_payment" | "sponsor_paid" | "proof_uploaded" | "disputed" | "proof_approved" | "organizer_paid" | "cancelled";
 
 export interface Profile {
   id: string;
@@ -109,6 +109,16 @@ export interface DealRow {
   proof_approved_at: string | null;
   organizer_paid_at: string | null;
   cancelled_at: string | null;
+  payment_method: "bank_transfer" | "card" | null;
+  stripe_checkout_session_id: string | null;
+  stripe_payment_intent_id: string | null;
+  payout_method: "bank_transfer" | "stripe" | null;
+  stripe_transfer_id: string | null;
+  stripe_refund_id: string | null;
+  refunded_at: string | null;
+  dispute_reason: string | null;
+  disputed_at: string | null;
+  auto_approved: boolean;
 }
 
 export interface InvoiceRow {
@@ -135,4 +145,5 @@ export interface SettingsRow {
   vat_rate: number;
   invoice_prefix: string;
   founding_partner_offer: boolean;
+  proof_review_days: number;
 }

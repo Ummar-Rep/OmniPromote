@@ -1,4 +1,4 @@
--- MarketingOne Phase 1: event sponsorship marketplace
+-- OmniPromote Phase 1: event sponsorship marketplace
 -- Run in the Supabase SQL editor or with `supabase db push`.
 
 create extension if not exists pgcrypto;
@@ -175,7 +175,7 @@ create table public.deal_proofs (
 -- Single-row company settings used on invoices.
 create table public.settings (
   id integer primary key default 1 check (id = 1),
-  legal_name text not null default 'MarketingOne FZE',
+  legal_name text not null default 'OmniPromote FZE',
   address text not null default 'United Arab Emirates',
   trn text,
   bank_name text,
@@ -184,7 +184,7 @@ create table public.settings (
   swift text,
   default_commission_rate numeric(5, 4) not null default 0.15,
   vat_rate numeric(5, 4) not null default 0.05,
-  invoice_prefix text not null default 'MO',
+  invoice_prefix text not null default 'OP',
   founding_partner_offer boolean not null default true,
   updated_at timestamptz not null default now()
 );

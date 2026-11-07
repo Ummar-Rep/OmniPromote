@@ -13,9 +13,9 @@ export async function Header() {
     <header className="no-print sticky top-0 z-40 bg-navy-900 text-white shadow">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
         <Link href="/" className="flex items-center gap-2 text-lg font-bold tracking-tight">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-gold-500 text-navy-900">M1</span>
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-gold-500 text-navy-900">OP</span>
           <span>
-            Marketing<span className="text-gold-400">One</span>
+            Omni<span className="text-gold-400">Promote</span>
           </span>
         </Link>
         <nav className="flex flex-wrap items-center gap-1 text-sm sm:gap-2">
@@ -30,6 +30,11 @@ export async function Header() {
               {profile.role === "admin" && (
                 <Link href="/admin" className="rounded-lg px-3 py-1.5 text-gold-300 hover:bg-white/10">
                   {t("admin")}
+                </Link>
+              )}
+              {profile.role === "organizer" && (
+                <Link href="/payouts" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
+                  {t("payouts")}
                 </Link>
               )}
               <Link href="/profile" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
