@@ -12,7 +12,8 @@
     "login": "Log in",
     "signup": "Get started",
     "logout": "Log out",
-    "language": "العربية"
+    "language": "العربية",
+    "payouts": "Payouts"
   },
   "footer": {
     "tagline": "The UAE marketplace for event sponsorship.",
@@ -103,7 +104,8 @@
     "proof_uploaded": "Proof uploaded",
     "proof_approved": "Proof approved",
     "organizer_paid": "Completed",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "disputed": "Concern raised"
   },
   "home": {
     "badge": "Built for the UAE",
@@ -316,7 +318,24 @@
     "proofs": "Proof of delivery",
     "approveProof": "Approve proof",
     "approveHint": "Approve when you are happy the sponsorship benefits were delivered. If there is a problem, message our team instead.",
-    "cancelled": "This deal was cancelled."
+    "cancelled": "This deal was cancelled.",
+    "payTitle": "Pay your invoice",
+    "payCard": "Pay {amount} by card",
+    "payCardHint": "Secure payment by Stripe. Visa, Mastercard, Apple Pay and Google Pay accepted.",
+    "payBank": "Or pay by bank transfer",
+    "paymentProcessing": "Thank you! Your payment is being confirmed. This page will update in a moment.",
+    "cardUnavailable": "Card payment is not available right now. Please pay by bank transfer.",
+    "notPayable": "This deal cannot be paid right now.",
+    "disputeOpen": "The sponsor raised a concern about the proof. Our team is reviewing it:",
+    "autoApproveOn": "If the sponsor does nothing, this proof is approved automatically on {date}.",
+    "autoApproved": "This proof was approved automatically after the review period.",
+    "raiseConcern": "Something is wrong? Raise a concern",
+    "concernPlaceholder": "Describe what was not delivered as agreed.",
+    "sendConcern": "Send concern to OmniPromote",
+    "paidBy": "Paid by",
+    "method_card": "Card",
+    "method_bank_transfer": "Bank transfer",
+    "refunded": "Refunded to sponsor"
   },
   "invoice": {
     "taxInvoice": "Tax invoice",
@@ -360,7 +379,7 @@
     "verify": "Verify",
     "unverify": "Remove verification",
     "markPaid": "Mark sponsor paid",
-    "markPayout": "Mark organizer paid",
+    "markPayout": "Mark paid by bank transfer",
     "cancelDeal": "Cancel deal",
     "setCommission": "Set commission %",
     "user": "User",
@@ -377,9 +396,32 @@
     "vatRate": "VAT rate (%)",
     "invoicePrefix": "Invoice prefix",
     "foundingOffer": "Founding Partner offer (0% on first deal)",
-    "nothingPending": "Nothing to review."
+    "nothingPending": "Nothing to review.",
+    "payStripe": "Pay organizer via Stripe",
+    "payoutVia": "Payout",
+    "payout_stripe": "Stripe",
+    "payout_bank_transfer": "Bank transfer",
+    "disputeApprove": "Approve proof anyway",
+    "disputeReupload": "Ask organizer for new proof",
+    "cancelRefundConfirm": "Cancel this deal and refund the sponsor's card payment?",
+    "proofReviewDays": "Days to review proof"
   },
   "legal": {
     "draftNote": "Draft for legal review. Not legal advice."
+  },
+  "payouts": {
+    "title": "Payouts",
+    "subtitle": "Get paid directly to your bank account when a sponsorship is complete.",
+    "status": "Payout account",
+    "ready": "Ready",
+    "incomplete": "Setup not finished",
+    "notSetUp": "Not set up",
+    "readyHint": "You're all set. Payouts from card-paid deals go straight to your bank account.",
+    "setupHint": "Add your company and bank details with our payment partner Stripe. It takes about 5 minutes and you need your trade licence and IBAN.",
+    "setup": "Set up payouts",
+    "continue": "Continue setup",
+    "dashboard": "View payout history",
+    "bankFallback": "Without a payout account, we pay you by manual bank transfer, which can take longer.",
+    "unavailable": "Online payouts are not switched on yet. We will pay you by bank transfer."
   }
 }

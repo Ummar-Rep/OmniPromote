@@ -5,13 +5,14 @@ import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
 import { formatAed, formatDate, formatDateTime, pick } from "@/lib/format";
 import { DEAL_SELECT, type DealJoined } from "@/lib/queries";
-import type { InvoiceRow, ProfileContacts } from "@/lib/types";
+import type { InvoiceRow, ProfileContacts, SettingsRow } from "@/lib/types";
 import { Card, Field, Input, Notice, Textarea, buttonClass } from "@/components/ui";
 import { SubmitButton } from "@/components/SubmitButton";
 import { MaskedText } from "@/components/MaskedText";
 import { DealBadge } from "@/components/StatusBadges";
 import { Flash } from "@/components/Flash";
-import { approveProof, uploadProof } from "./actions";
+import { approveProof, payByCard, raiseDispute, uploadProof } from "./actions";
+import { getStripe } from "@/lib/stripe";
 
 const ORDER = ["awaiting_sponsor_payment", "sponsor_paid", "proof_uploaded", "proof_approved", "organizer_paid"];
 
@@ -20,11 +21,11 @@ export default async function DealPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; id: string }>;
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; paid?: string }>;
 }) {
   const { locale, id } = await params;
   setRequestLocale(locale as Locale);
-  const { error } = await searchParams;
+  const { error, paid } = await searchParams;
   const { supabase, user, profile } = await requireUser(locale);
   const t = await getTranslations();
 
@@ -36,11 +37,17 @@ export default async function DealPage({
   const isAdmin = profile.role === "admin";
   const otherId = isOrganizer ? deal.sponsor_id : deal.organizer_id;
 
-  const [{ data: invoices }, { data: proofs }, { data: contacts }] = await Promise.all([
+  const [{ data: invoices }, { data: proofs }, { data: contacts }, { data: settings }] = await Promise.all([
     supabase.from("invoices").select("*").eq("deal_id", id).returns<InvoiceRow[]>(),
     supabase.from("deal_proofs").select("*").eq("deal_id", id).order("created_at"),
     supabase.from("profile_contacts").select("*").eq("profile_id", otherId).maybeSingle<ProfileContacts>(),
+    supabase.from("settings").select("proof_review_days").eq("id", 1).maybeSingle<Pick<SettingsRow, "proof_review_days">>(),
   ]);
+  const cardEnabled = getStripe() !== null;
+  const autoApproveOn =
+    deal.status === "proof_uploaded" && deal.proof_uploaded_at
+      ? new Date(new Date(deal.proof_uploaded_at).getTime() + (settings?.proof_review_days ?? 7) * 86400000).toISOString()
+      : null;
 
   // Signed links for private proof files (valid for 1 hour).
   const proofLinks: { name: string; url: string }[] = [];
@@ -51,7 +58,7 @@ export default async function DealPage({
     }
   }
 
-  const stepIndex = ORDER.indexOf(deal.status);
+  const stepIndex = ORDER.indexOf(deal.status === "disputed" ? "proof_uploaded" : deal.status);
   const steps = [t("deal.step1"), t("deal.step2"), t("deal.step3"), t("deal.step4"), t("deal.step5")];
   const sponsorInvoice = invoices?.find((i) => i.type === "sponsor_invoice");
   const statement = invoices?.find((i) => i.type === "organizer_statement");
@@ -60,7 +67,27 @@ export default async function DealPage({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
-      <Flash error={error} />
+      <Flash
+        error={
+          error
+            ? error === "cardUnavailable" || error === "notPayable"
+              ? t(`deal.${error}`)
+              : error
+            : undefined
+        }
+      />
+      {paid && deal.status === "awaiting_sponsor_payment" && (
+        <div className="mb-6">
+          <Notice tone="success">{t("deal.paymentProcessing")}</Notice>
+        </div>
+      )}
+      {deal.status === "disputed" && (
+        <div className="mb-6">
+          <Notice tone="error">
+            {t("deal.disputeOpen")} {deal.dispute_reason && <MaskedText text={deal.dispute_reason} />}
+          </Notice>
+        </div>
+      )}
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm text-navy-500">{t("deal.title")}</p>
@@ -105,7 +132,22 @@ export default async function DealPage({
           </Card>
 
           {isSponsor && deal.status === "awaiting_sponsor_payment" && (
-            <Notice>{t("deal.payInstructions")}</Notice>
+            <Card className="space-y-4">
+              <h2 className="font-semibold">{t("deal.payTitle")}</h2>
+              {cardEnabled && (
+                <form action={payByCard} className="space-y-2">
+                  <input type="hidden" name="deal_id" value={deal.id} />
+                  <SubmitButton pendingText={t("common.saving")}>
+                    {t("deal.payCard", { amount: formatAed(deal.total_due_aed, locale) })}
+                  </SubmitButton>
+                  <p className="text-xs text-navy-500">{t("deal.payCardHint")}</p>
+                </form>
+              )}
+              <div className="rounded-lg bg-navy-50 p-4 text-sm text-navy-700">
+                <p className="mb-1 font-medium">{t("deal.payBank")}</p>
+                {t("deal.payInstructions")}
+              </div>
+            </Card>
           )}
 
           {isOrganizer && ["sponsor_paid", "proof_uploaded"].includes(deal.status) && (
@@ -144,12 +186,28 @@ export default async function DealPage({
                   </p>
                 ) : null,
               )}
+              {autoApproveOn && (
+                <p className="mt-4 text-xs text-navy-500">
+                  {t("deal.autoApproveOn", { date: formatDate(autoApproveOn, locale) })}
+                </p>
+              )}
+              {deal.auto_approved && <p className="mt-4 text-xs text-navy-500">{t("deal.autoApproved")}</p>}
               {isSponsor && deal.status === "proof_uploaded" && (
-                <form action={approveProof} className="mt-5 space-y-2">
-                  <input type="hidden" name="deal_id" value={deal.id} />
-                  <p className="text-sm text-navy-500">{t("deal.approveHint")}</p>
-                  <SubmitButton>{t("deal.approveProof")}</SubmitButton>
-                </form>
+                <div className="mt-5 space-y-4">
+                  <form action={approveProof} className="space-y-2">
+                    <input type="hidden" name="deal_id" value={deal.id} />
+                    <p className="text-sm text-navy-500">{t("deal.approveHint")}</p>
+                    <SubmitButton>{t("deal.approveProof")}</SubmitButton>
+                  </form>
+                  <details className="rounded-xl border border-navy-100 p-4">
+                    <summary className="cursor-pointer text-sm font-semibold text-red-700">{t("deal.raiseConcern")}</summary>
+                    <form action={raiseDispute} className="mt-3 space-y-3">
+                      <input type="hidden" name="deal_id" value={deal.id} />
+                      <Textarea name="reason" rows={3} required placeholder={t("deal.concernPlaceholder")} />
+                      <SubmitButton variant="danger">{t("deal.sendConcern")}</SubmitButton>
+                    </form>
+                  </details>
+                </div>
               )}
             </Card>
           )}
@@ -159,6 +217,10 @@ export default async function DealPage({
           <Card className="space-y-2 text-sm">
             <h2 className="mb-2 font-semibold">{t("deal.summary")}</h2>
             <Row label={t("deal.agreedPrice")} value={formatAed(deal.agreed_price_aed, locale)} />
+            {deal.payment_method && (
+              <Row label={t("deal.paidBy")} value={t(`deal.method_${deal.payment_method}`)} />
+            )}
+            {deal.refunded_at && <p className="text-xs text-red-700">{t("deal.refunded")}</p>}
             {isSponsor || isAdmin ? (
               <>
                 <Row label={t("deal.vat", { rate: pct(deal.vat_rate) })} value={formatAed(deal.vat_aed, locale)} />

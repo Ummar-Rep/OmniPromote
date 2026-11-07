@@ -195,6 +195,8 @@ async function DealsTab({ supabase, locale }: Props) {
     .order("created_at", { ascending: false })
     .returns<DealJoined[]>();
   if (!deals?.length) return <Card>{t("dashboard.noDeals")}</Card>;
+  const { data: accounts } = await supabase.from("payout_accounts").select("profile_id, payouts_enabled");
+  const payoutReady = new Set((accounts ?? []).filter((a) => a.payouts_enabled).map((a) => a.profile_id));
   return (
     <div className="space-y-4">
       {deals.map((d) => {
@@ -216,7 +218,13 @@ async function DealsTab({ supabase, locale }: Props) {
               {formatAed(d.agreed_price_aed, locale)} · {t("deal.commission", { rate: String(d.commission_rate * 100) })}:{" "}
               <strong>{formatAed(d.commission_aed, locale)}</strong> · {t("deal.payout")}:{" "}
               {formatAed(d.organizer_payout_aed, locale)}
+              {d.payment_method && <> · {t("deal.paidBy")}: {t(`deal.method_${d.payment_method}`)}</>}
+              {d.payout_method && <> · {t("admin.payoutVia")}: {t(`admin.payout_${d.payout_method}`)}</>}
+              {d.refunded_at && <> · {t("deal.refunded")}</>}
             </p>
+            {d.status === "disputed" && d.dispute_reason && (
+              <p className="rounded-lg bg-red-50 p-3 text-sm text-red-800">{d.dispute_reason}</p>
+            )}
             {!closed && (
               <form action={dealAction} className="flex flex-wrap items-center gap-2">
                 <input type="hidden" name="id" value={d.id} />
@@ -226,9 +234,26 @@ async function DealsTab({ supabase, locale }: Props) {
                   </SubmitButton>
                 )}
                 {(d.status === "proof_approved" || d.status === "proof_uploaded") && (
-                  <SubmitButton name="intent" value="payout" confirm={t("admin.markPayout") + "?"}>
-                    {t("admin.markPayout")}
-                  </SubmitButton>
+                  <>
+                    {d.payment_method === "card" && payoutReady.has(d.organizer_id) && (
+                      <SubmitButton name="intent" value="payout_stripe" confirm={t("admin.payStripe") + "?"}>
+                        {t("admin.payStripe")}
+                      </SubmitButton>
+                    )}
+                    <SubmitButton variant="secondary" name="intent" value="payout" confirm={t("admin.markPayout") + "?"}>
+                      {t("admin.markPayout")}
+                    </SubmitButton>
+                  </>
+                )}
+                {d.status === "disputed" && (
+                  <>
+                    <SubmitButton name="intent" value="dispute_approve">
+                      {t("admin.disputeApprove")}
+                    </SubmitButton>
+                    <SubmitButton variant="secondary" name="intent" value="dispute_reupload">
+                      {t("admin.disputeReupload")}
+                    </SubmitButton>
+                  </>
                 )}
                 <Input
                   name="rate"
@@ -243,7 +268,12 @@ async function DealsTab({ supabase, locale }: Props) {
                 <SubmitButton variant="secondary" name="intent" value="commission">
                   {t("admin.setCommission")}
                 </SubmitButton>
-                <SubmitButton variant="danger" name="intent" value="cancel" confirm={t("admin.cancelDeal") + "?"}>
+                <SubmitButton
+                  variant="danger"
+                  name="intent"
+                  value="cancel"
+                  confirm={d.payment_method === "card" ? t("admin.cancelRefundConfirm") : t("admin.cancelDeal") + "?"}
+                >
                   {t("admin.cancelDeal")}
                 </SubmitButton>
               </form>
@@ -330,6 +360,9 @@ async function SettingsTab({ supabase }: Omit<Props, "locale">) {
           </Field>
           <Field label={t("admin.invoicePrefix")}>
             <Input name="invoice_prefix" defaultValue={s.invoice_prefix} />
+          </Field>
+          <Field label={t("admin.proofReviewDays")}>
+            <Input name="proof_review_days" type="number" min={1} max={60} defaultValue={s.proof_review_days} />
           </Field>
         </div>
         <label className="flex items-center gap-2 text-sm">

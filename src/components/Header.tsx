@@ -32,6 +32,11 @@ export async function Header() {
                   {t("admin")}
                 </Link>
               )}
+              {profile.role === "organizer" && (
+                <Link href="/payouts" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
+                  {t("payouts")}
+                </Link>
+              )}
               <Link href="/profile" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
                 {t("profile")}
               </Link>
