@@ -1,4 +1,7 @@
-export type UserRole = "organizer" | "sponsor" | "admin";
+export type UserRole = "organizer" | "sponsor" | "media_owner" | "admin";
+export type AdSpaceType =
+  | "billboard" | "digital_screen" | "mall_screen" | "transit" | "airport" | "street_furniture" | "venue_screen" | "other";
+export type BookingStatus = "requested" | "accepted" | "declined" | "withdrawn";
 export type EventCategory =
   | "conference" | "exhibition" | "sports" | "concert" | "festival" | "community" | "corporate" | "education" | "other";
 export type EventStatus = "draft" | "pending_review" | "published" | "rejected" | "closed";
@@ -78,7 +81,8 @@ export interface ProposalRow {
 
 export interface MessageRow {
   id: string;
-  proposal_id: string;
+  proposal_id: string | null;
+  booking_id: string | null;
   sender_id: string;
   body: string;
   was_masked: boolean;
@@ -87,9 +91,11 @@ export interface MessageRow {
 
 export interface DealRow {
   id: string;
-  proposal_id: string;
-  package_id: string;
-  event_id: string;
+  proposal_id: string | null;
+  package_id: string | null;
+  event_id: string | null;
+  booking_id: string | null;
+  ad_space_id: string | null;
   sponsor_id: string;
   organizer_id: string;
   agreed_price_aed: number;
@@ -146,4 +152,45 @@ export interface SettingsRow {
   invoice_prefix: string;
   founding_partner_offer: boolean;
   proof_review_days: number;
+}
+
+export interface AdSpaceRow {
+  id: string;
+  owner_id: string;
+  title_en: string;
+  title_ar: string | null;
+  description_en: string;
+  description_ar: string | null;
+  type: AdSpaceType;
+  emirate: string;
+  area: string | null;
+  lat: number;
+  lng: number;
+  width_m: number | null;
+  height_m: number | null;
+  illuminated: boolean;
+  is_digital: boolean;
+  daily_impressions: number | null;
+  audience_description: string | null;
+  price_per_week_aed: number;
+  min_weeks: number;
+  cover_image_url: string | null;
+  photo_urls: string[];
+  status: EventStatus;
+  rejection_reason: string | null;
+  created_at: string;
+}
+
+export interface BookingRow {
+  id: string;
+  ad_space_id: string;
+  buyer_id: string;
+  owner_id: string;
+  start_date: string;
+  weeks: number;
+  end_date: string;
+  message: string;
+  offered_price_aed: number | null;
+  status: BookingStatus;
+  created_at: string;
 }

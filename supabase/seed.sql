@@ -1,6 +1,6 @@
--- Demo data: 2 organizers, 1 sponsor, 10 published UAE events with packages.
+-- Demo data: 2 organizers, 1 sponsor, 1 media owner, 10 published UAE events with packages, 8 ad spaces.
 -- Demo logins (password for all: Demo1234!):
---   organizer1@demo.omnipromote.ae, organizer2@demo.omnipromote.ae, sponsor@demo.omnipromote.ae
+--   organizer1@demo.omnipromote.ae, organizer2@demo.omnipromote.ae, sponsor@demo.omnipromote.ae, media@demo.omnipromote.ae
 -- Safe to run once on a fresh project (SQL editor or `supabase db reset`).
 
 do $$
@@ -135,3 +135,87 @@ select e.id,
        array['Logo on partner wall', 'Mention in closing ceremony'],
        'Photo of partner wall', 3
   from public.events e where e.id::text like 'e0000000%';
+
+-- ───────────── Phase 3 demo: 1 media owner and 8 ad spaces ─────────────
+-- Demo login: media@demo.omnipromote.ae (password Demo1234!)
+insert into auth.users (
+  instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
+  raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+  confirmation_token, recovery_token, email_change, email_change_token_new
+) values (
+  '00000000-0000-0000-0000-000000000000', '44444444-4444-4444-4444-444444444444', 'authenticated', 'authenticated',
+  'media@demo.omnipromote.ae', crypt('Demo1234!', gen_salt('bf')), now(),
+  '{"provider":"email","providers":["email"]}',
+  jsonb_build_object('role', 'media_owner', 'company_name', 'Skyline Outdoor Media'),
+  now(), now(), '', '', '', ''
+) on conflict (id) do nothing;
+
+insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+values (gen_random_uuid(), '44444444-4444-4444-4444-444444444444', '44444444-4444-4444-4444-444444444444',
+        jsonb_build_object('sub', '44444444-4444-4444-4444-444444444444', 'email', 'media@demo.omnipromote.ae', 'email_verified', true),
+        'email', now(), now(), now())
+on conflict do nothing;
+
+update public.profiles set verified = true, onboarded = true, emirate = 'Dubai', company_type = 'other'
+ where id = '44444444-4444-4444-4444-444444444444';
+
+insert into public.ad_spaces (id, owner_id, title_en, title_ar, description_en, description_ar, type, emirate, area, lat, lng,
+                              width_m, height_m, illuminated, is_digital, daily_impressions, audience_description,
+                              price_per_week_aed, min_weeks, cover_image_url, status)
+values
+  ('a0000000-0000-0000-0000-000000000001', '44444444-4444-4444-4444-444444444444',
+   'Sheikh Zayed Road Unipole', 'لوحة شارع الشيخ زايد',
+   'Double-sided unipole facing traffic in both directions on the busiest highway in Dubai.',
+   'لوحة أحادية العمود بوجهين تواجه حركة المرور في الاتجاهين على أكثر الطرق ازدحامًا في دبي.',
+   'billboard', 'Dubai', 'Sheikh Zayed Road, Al Barsha', 25.112400, 55.198000, 12, 4, true, false, 350000,
+   'Commuters, professionals and tourists driving between Dubai and Abu Dhabi',
+   30000, 2, 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200', 'published'),
+  ('a0000000-0000-0000-0000-000000000002', '44444444-4444-4444-4444-444444444444',
+   'Downtown Mall Digital Screen Network', 'شبكة شاشات رقمية في مول وسط المدينة',
+   'Network of 20 portrait digital screens across the main mall corridors. 10-second spot, 6 plays per minute.',
+   'شبكة من ٢٠ شاشة رقمية عمودية في الممرات الرئيسية للمول. إعلان ١٠ ثوانٍ، ٦ مرات في الدقيقة.',
+   'mall_screen', 'Dubai', 'Downtown Dubai', 25.198500, 55.279600, null, null, true, true, 150000,
+   'Shoppers, families and tourists', 18000, 1, 'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=1200', 'published'),
+  ('a0000000-0000-0000-0000-000000000003', '44444444-4444-4444-4444-444444444444',
+   'Airport Arrivals Hall Screen', 'شاشة صالة الوصول في المطار',
+   'Large LED screen facing passengers as they leave baggage claim.',
+   'شاشة LED كبيرة تواجه المسافرين عند خروجهم من منطقة استلام الأمتعة.',
+   'airport', 'Dubai', 'Dubai International, Terminal 3', 25.252800, 55.364400, 8, 3, true, true, 200000,
+   'International travellers, business visitors and returning residents',
+   45000, 2, 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200', 'published'),
+  ('a0000000-0000-0000-0000-000000000004', '44444444-4444-4444-4444-444444444444',
+   'Corniche LED Screen', 'شاشة الكورنيش الرقمية',
+   'Roadside LED screen on the Corniche, visible to drivers and walkers day and night.',
+   'شاشة LED على جانب طريق الكورنيش، مرئية للسائقين والمشاة ليلًا ونهارًا.',
+   'digital_screen', 'Abu Dhabi', 'Corniche Road', 24.476400, 54.329700, 10, 5, true, true, 120000,
+   'Residents, families and joggers on the Corniche', 22000, 1,
+   'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=1200', 'published'),
+  ('a0000000-0000-0000-0000-000000000005', '44444444-4444-4444-4444-444444444444',
+   'Al Ittihad Road Billboard', 'لوحة طريق الاتحاد',
+   'Static billboard on the main Sharjah–Dubai commuter road with heavy morning and evening traffic.',
+   'لوحة ثابتة على طريق الاتحاد الرئيسي بين الشارقة ودبي مع حركة كثيفة صباحًا ومساءً.',
+   'billboard', 'Sharjah', 'Al Ittihad Road', 25.307500, 55.387000, 14, 5, true, false, 250000,
+   'Daily commuters between Sharjah and Dubai', 12000, 4,
+   'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200', 'published'),
+  ('a0000000-0000-0000-0000-000000000006', '44444444-4444-4444-4444-444444444444',
+   'Metro Station Wrap, Business Bay', 'تغليف محطة مترو الخليج التجاري',
+   'Full wrap of station walls and platform doors at a busy metro station.',
+   'تغليف كامل لجدران المحطة وأبواب الرصيف في محطة مترو مزدحمة.',
+   'transit', 'Dubai', 'Business Bay', 25.191300, 55.260300, null, null, true, false, 80000,
+   'Office workers and young professionals', 15000, 2,
+   'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=1200', 'published'),
+  ('a0000000-0000-0000-0000-000000000007', '44444444-4444-4444-4444-444444444444',
+   'Yas Island Bus Shelter Panels (x10)', 'لوحات مظلات الحافلات في جزيرة ياس (١٠)',
+   'Ten backlit panels at bus shelters around the theme parks and Yas Mall.',
+   'عشر لوحات مضاءة في مظلات الحافلات حول المدن الترفيهية وياس مول.',
+   'street_furniture', 'Abu Dhabi', 'Yas Island', 24.488000, 54.607000, 1.2, 1.8, true, false, 40000,
+   'Tourists, families and theme park visitors', 8000, 2,
+   'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1200', 'published'),
+  ('a0000000-0000-0000-0000-000000000008', '44444444-4444-4444-4444-444444444444',
+   'Al Hamra Mall Entrance Screen', 'شاشة مدخل مول الحمراء',
+   'Digital screen at the main entrance of a popular community mall.',
+   'شاشة رقمية عند المدخل الرئيسي لمول مجتمعي مشهور.',
+   'mall_screen', 'Ras Al Khaimah', 'Al Hamra', 25.691700, 55.780000, 3, 2, true, true, 20000,
+   'Local residents and weekend visitors', 5000, 1,
+   'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=1200', 'published')
+on conflict (id) do nothing;

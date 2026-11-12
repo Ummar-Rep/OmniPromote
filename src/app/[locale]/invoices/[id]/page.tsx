@@ -2,8 +2,8 @@ import type { Locale } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireUser } from "@/lib/auth";
-import { formatAed, formatDate, pick } from "@/lib/format";
-import { DEAL_SELECT, type DealJoined } from "@/lib/queries";
+import { formatAed, formatDate } from "@/lib/format";
+import { DEAL_SELECT, dealTitle, type DealJoined } from "@/lib/queries";
 import type { InvoiceRow, SettingsRow } from "@/lib/types";
 import { PrintButton } from "@/components/PrintButton";
 
@@ -23,10 +23,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ locale
 
   const isStatement = invoice.type === "organizer_statement";
   const party = isStatement ? deal.organizer : deal.sponsor;
-  const eventName = deal.event ? pick(deal.event, "title", locale) : "";
-  const description = isStatement
-    ? t("payoutFor", { package: deal.package?.tier_name ?? "", event: eventName })
-    : t("sponsorshipOf", { package: deal.package?.tier_name ?? "", event: eventName });
+  const name = dealTitle(deal, locale);
+  const description = deal.booking
+    ? t(isStatement ? "payoutForBooking" : "bookingOf", {
+        space: name,
+        from: formatDate(deal.booking.start_date, locale),
+        to: formatDate(deal.booking.end_date, locale),
+      })
+    : t(isStatement ? "payoutFor" : "sponsorshipOf", { package: deal.package?.tier_name ?? "", event: name });
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">

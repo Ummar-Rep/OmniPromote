@@ -39,8 +39,8 @@ export async function uploadProof(form: FormData) {
       deal.sponsor_id,
       { en: "Proof of delivery uploaded", ar: "تم رفع إثبات التنفيذ" },
       {
-        en: "The organizer uploaded proof that your sponsorship was delivered. Please review and approve it.",
-        ar: "رفع المنظم إثبات تنفيذ رعايتك. يرجى المراجعة والموافقة.",
+        en: "The provider uploaded proof that your sponsorship or ad campaign was delivered. Please review and approve it.",
+        ar: "رفع مقدم الخدمة إثبات تنفيذ رعايتك أو حملتك الإعلانية. يرجى المراجعة والموافقة.",
       },
       back,
     );
@@ -83,7 +83,9 @@ export async function payByCard(form: FormData) {
 
   const { data: deal } = await supabase
     .from("deals")
-    .select("id, sponsor_id, status, total_due_aed, event:events(title_en), package:sponsorship_packages(tier_name)")
+    .select(
+      "id, sponsor_id, status, total_due_aed, booking_id, event:events(title_en), package:sponsorship_packages(tier_name), space:ad_spaces(title_en), booking:ad_bookings(weeks)",
+    )
     .eq("id", dealId)
     .single<{
       id: string;
@@ -92,6 +94,9 @@ export async function payByCard(form: FormData) {
       total_due_aed: number;
       event: { title_en: string } | null;
       package: { tier_name: string } | null;
+      booking_id: string | null;
+      space: { title_en: string } | null;
+      booking: { weeks: number } | null;
     }>();
   if (!deal || deal.sponsor_id !== user.id || deal.status !== "awaiting_sponsor_payment") {
     return redirect({ href: { pathname: back, query: { error: "notPayable" } }, locale });
@@ -117,7 +122,10 @@ export async function payByCard(form: FormData) {
           currency: "aed",
           unit_amount: toFils(deal.total_due_aed),
           product_data: {
-            name: `Sponsorship: ${deal.package?.tier_name ?? ""} – ${deal.event?.title_en ?? ""}`.slice(0, 250),
+            name: (deal.booking_id
+              ? `Ad space booking: ${deal.space?.title_en ?? ""} (${deal.booking?.weeks ?? ""} weeks)`
+              : `Sponsorship: ${deal.package?.tier_name ?? ""} – ${deal.event?.title_en ?? ""}`
+            ).slice(0, 250),
             description: invoice ? `Invoice ${invoice.number} (incl. VAT)` : undefined,
           },
         },

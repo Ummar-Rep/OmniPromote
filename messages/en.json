@@ -13,7 +13,8 @@
     "signup": "Get started",
     "logout": "Log out",
     "language": "العربية",
-    "payouts": "Payouts"
+    "payouts": "Payouts",
+    "spaces": "Billboards & screens"
   },
   "footer": {
     "tagline": "The UAE marketplace for event sponsorship.",
@@ -136,7 +137,12 @@
     "why3Title": "One invoice, VAT ready",
     "why3": "Clear invoices for your finance team, in English and Arabic.",
     "upcoming": "Upcoming events",
-    "seeAll": "See all events"
+    "seeAll": "See all events",
+    "spacesBadge": "New",
+    "spacesTitle": "Billboards and digital screens across the UAE",
+    "spacesBody": "Find outdoor billboards, mall screens and airport displays on a map, check free dates and book them with one invoice.",
+    "spacesCta": "Find ad spaces",
+    "spacesOwnerCta": "List your billboard or screen"
   },
   "browse": {
     "title": "Events looking for sponsors",
@@ -196,7 +202,10 @@
     "noAccount": "New here?",
     "haveAccount": "Already have an account?",
     "checkEmail": "Check your email to confirm your account, then log in.",
-    "invalid": "Email or password is incorrect."
+    "invalid": "Email or password is incorrect.",
+    "roleMediaOwner": "A billboard / screen owner",
+    "roleMediaOwnerHint": "I want brands to book my ad spaces.",
+    "unconfirmed": "Please confirm your email first. Open the link we sent to your inbox (check spam too), then log in."
   },
   "profile": {
     "title": "Company profile",
@@ -234,7 +243,18 @@
     "from": "From",
     "to": "To",
     "payout": "Your payout",
-    "total": "Total"
+    "total": "Total",
+    "mediaOwnerTitle": "Your ad spaces",
+    "newSpace": "List an ad space",
+    "browseSpacesCta": "Find billboards and screens",
+    "mySpaces": "My ad spaces",
+    "noSpaces": "You haven't listed any ad spaces yet.",
+    "bookingsReceived": "Booking requests received",
+    "bookingsSent": "Ad space bookings",
+    "space": "Ad space",
+    "noBookings": "No booking requests yet.",
+    "listing": "Event or ad space",
+    "details": "Details"
   },
   "eventForm": {
     "newTitle": "List a new event",
@@ -335,7 +355,10 @@
     "paidBy": "Paid by",
     "method_card": "Card",
     "method_bank_transfer": "Bank transfer",
-    "refunded": "Refunded to sponsor"
+    "refunded": "Refunded to sponsor",
+    "step1Booking": "Booking accepted",
+    "step3Booking": "Campaign runs, media owner uploads proof",
+    "step5Booking": "Media owner is paid"
   },
   "invoice": {
     "taxInvoice": "Tax invoice",
@@ -358,7 +381,9 @@
     "reference": "Reference",
     "paid": "PAID",
     "print": "Print / save as PDF",
-    "trn": "TRN"
+    "trn": "TRN",
+    "bookingOf": "Ad space booking: {space}, {from} to {to}",
+    "payoutForBooking": "Payout for ad space booking: {space}, {from} to {to}"
   },
   "admin": {
     "title": "Admin",
@@ -404,7 +429,9 @@
     "disputeApprove": "Approve proof anyway",
     "disputeReupload": "Ask organizer for new proof",
     "cancelRefundConfirm": "Cancel this deal and refund the sponsor's card payment?",
-    "proofReviewDays": "Days to review proof"
+    "proofReviewDays": "Days to review proof",
+    "tabSpaces": "Ad spaces",
+    "pendingSpaces": "Ad spaces to review"
   },
   "legal": {
     "draftNote": "Draft for legal review. Not legal advice."
@@ -423,5 +450,96 @@
     "dashboard": "View payout history",
     "bankFallback": "Without a payout account, we pay you by manual bank transfer, which can take longer.",
     "unavailable": "Online payouts are not switched on yet. We will pay you by bank transfer."
+  },
+  "spaceTypes": {
+    "billboard": "Billboard",
+    "digital_screen": "Digital screen",
+    "mall_screen": "Mall screen",
+    "transit": "Transit (bus, metro, taxi)",
+    "airport": "Airport",
+    "street_furniture": "Street furniture",
+    "venue_screen": "Venue screen",
+    "other": "Other"
+  },
+  "bookingStatus": {
+    "requested": "Requested",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "withdrawn": "Withdrawn"
+  },
+  "spaces": {
+    "title": "Billboards and screens",
+    "subtitle": "Find outdoor and digital ad spaces on the map and book your dates.",
+    "search": "Search by name or area",
+    "impressions": "{count} daily impressions",
+    "perWeek": "{price} / week",
+    "loginForPrice": "Log in to see the price",
+    "digital": "Digital",
+    "illuminated": "Lit at night",
+    "availableFrom": "Available from",
+    "forWeeks": "For how many weeks",
+    "maxPerWeek": "Max price per week (AED)",
+    "digitalOnly": "Digital only",
+    "results": "{count, plural, =0 {No ad spaces found} one {# ad space} other {# ad spaces}}",
+    "location": "Location",
+    "size": "Size",
+    "minBooking": "Minimum booking",
+    "weeks": "{count, plural, one {# week} other {# weeks}}",
+    "owner": "Media owner",
+    "price": "Price",
+    "photos": "More photos",
+    "onMap": "On the map",
+    "bookedDates": "Already booked",
+    "allFree": "No bookings yet. All dates are free.",
+    "loginToBook": "Log in to see prices and book this space.",
+    "ownSpace": "This is your ad space.",
+    "onlySponsors": "Only brand / sponsor accounts can book ad spaces.",
+    "viewRequest": "View your booking request",
+    "requestTitle": "Request a booking",
+    "requestHint": "The owner confirms the dates. You pay only after they accept.",
+    "startDate": "Start date",
+    "numWeeks": "Weeks",
+    "messageHint": "Tell the owner about your brand and campaign. Contact details are hidden.",
+    "offerTotal": "Your offer for the whole booking (AED)",
+    "offerTotalHint": "Leave empty to pay the listed price.",
+    "sendRequest": "Send booking request"
+  },
+  "spaceForm": {
+    "newTitle": "List an ad space",
+    "newSubtitle": "Billboards, screens and other ad spaces. Listing is free.",
+    "editTitle": "Edit ad space",
+    "titleEn": "Name (English)",
+    "titleAr": "Name (Arabic)",
+    "descriptionEn": "Description (English)",
+    "descriptionAr": "Description (Arabic)",
+    "type": "Type",
+    "area": "Area / road",
+    "areaHint": "For example: Sheikh Zayed Road, Al Barsha",
+    "location": "Exact location",
+    "locationHint": "Click the map to drop the pin, or paste coordinates from Google Maps.",
+    "lat": "Latitude",
+    "lng": "Longitude",
+    "width": "Width (m)",
+    "height": "Height (m)",
+    "impressions": "Daily impressions",
+    "pricePerWeek": "Price per week (AED)",
+    "minWeeks": "Minimum weeks",
+    "audience": "Audience (who passes by)",
+    "cover": "Main photo",
+    "photos": "More photos",
+    "photosHint": "Up to 8 photos at a time.",
+    "needLocation": "Please set the location on the map.",
+    "draftNote": "This is a draft. Submit it for review when it's ready and our team will publish it.",
+    "clearPhotos": "Remove extra photos",
+    "close": "Stop taking bookings",
+    "delete": "Delete ad space"
+  },
+  "booking": {
+    "title": "Booking request",
+    "buyer": "Brand",
+    "owner": "Media owner",
+    "listTotal": "Listed price for these weeks",
+    "acceptConfirm": "Accepting books these dates and sends the brand an invoice from OmniPromote.",
+    "decline": "Decline"
   }
 }

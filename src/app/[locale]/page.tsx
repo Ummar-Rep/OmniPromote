@@ -72,6 +72,24 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
+      <section className="mx-auto max-w-6xl px-4 pt-16">
+        <div className="grid items-center gap-6 rounded-3xl border border-gold-300/60 bg-gold-100/60 p-8 md:grid-cols-[1fr_auto]">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-wide text-gold-600">{t("spacesBadge")}</span>
+            <h2 className="mt-2 text-2xl font-bold text-navy-900">{t("spacesTitle")}</h2>
+            <p className="mt-2 max-w-2xl text-navy-700">{t("spacesBody")}</p>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/spaces" className={buttonClass.dark}>
+              {t("spacesCta")}
+            </Link>
+            <Link href="/signup?role=media_owner" className={buttonClass.secondary}>
+              {t("spacesOwnerCta")}
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section id="how" className="mx-auto max-w-6xl px-4 py-16">
         <h2 className="mb-8 text-2xl font-bold">{t("howTitle")}</h2>
         <div className="grid gap-6 md:grid-cols-2">

@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import type { DealStatus, ProposalStatus } from "@/lib/types";
+import type { BookingStatus, DealStatus, ProposalStatus } from "@/lib/types";
 import { Badge } from "./ui";
 
 const dealTone: Record<DealStatus, "gray" | "gold" | "green" | "red" | "blue"> = {
@@ -26,4 +26,16 @@ export function DealBadge({ status }: { status: DealStatus }) {
 export function ProposalBadge({ status }: { status: ProposalStatus }) {
   const t = useTranslations("proposalStatus");
   return <Badge tone={proposalTone[status]}>{t(status)}</Badge>;
+}
+
+const bookingTone: Record<BookingStatus, "gray" | "gold" | "green" | "red"> = {
+  requested: "gold",
+  accepted: "green",
+  declined: "red",
+  withdrawn: "gray",
+};
+
+export function BookingBadge({ status }: { status: BookingStatus }) {
+  const t = useTranslations("bookingStatus");
+  return <Badge tone={bookingTone[status]}>{t(status)}</Badge>;
 }

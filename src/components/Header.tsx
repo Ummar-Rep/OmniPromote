@@ -22,6 +22,9 @@ export async function Header() {
           <Link href="/events" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
             {t("browse")}
           </Link>
+          <Link href="/spaces" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
+            {t("spaces")}
+          </Link>
           {profile ? (
             <>
               <Link href="/dashboard" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
@@ -32,7 +35,7 @@ export async function Header() {
                   {t("admin")}
                 </Link>
               )}
-              {profile.role === "organizer" && (
+              {(profile.role === "organizer" || profile.role === "media_owner") && (
                 <Link href="/payouts" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
                   {t("payouts")}
                 </Link>
