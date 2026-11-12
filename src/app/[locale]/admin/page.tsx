@@ -3,19 +3,20 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
 import { formatAed, formatDate, formatDateTime, pick } from "@/lib/format";
-import { DEAL_SELECT, type DealJoined } from "@/lib/queries";
-import type { EventRow, Profile, SettingsRow } from "@/lib/types";
+import { DEAL_SELECT, dealSubtitle, dealTitle, type DealJoined } from "@/lib/queries";
+import type { AdSpaceRow, EventRow, Profile, SettingsRow } from "@/lib/types";
 import { Badge, Card, Field, Input, PageHeader } from "@/components/ui";
 import { SubmitButton } from "@/components/SubmitButton";
 import { DealBadge } from "@/components/StatusBadges";
 import { Flash } from "@/components/Flash";
-import { dealAction, reviewEvent, saveSettings, setVerified } from "./actions";
+import { dealAction, reviewEvent, reviewSpace, saveSettings, setVerified } from "./actions";
 
-const TABS = ["overview", "events", "companies", "deals", "attempts", "settings"] as const;
+const TABS = ["overview", "events", "spaces", "companies", "deals", "attempts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 const TAB_LABEL = {
   overview: "tabOverview",
   events: "tabEvents",
+  spaces: "tabSpaces",
   companies: "tabCompanies",
   deals: "tabDeals",
   attempts: "tabAttempts",
@@ -55,6 +56,7 @@ export default async function AdminPage({
       <Flash error={sp.error} ok={sp.ok ? t("common.saved") : undefined} />
       {tab === "overview" && <Overview supabase={supabase} locale={locale} />}
       {tab === "events" && <EventsTab supabase={supabase} locale={locale} />}
+      {tab === "spaces" && <SpacesTab supabase={supabase} locale={locale} />}
       {tab === "companies" && <CompaniesTab supabase={supabase} locale={locale} />}
       {tab === "deals" && <DealsTab supabase={supabase} locale={locale} />}
       {tab === "attempts" && <AttemptsTab supabase={supabase} locale={locale} />}
@@ -70,9 +72,10 @@ type Props = {
 
 async function Overview({ supabase, locale }: Props) {
   const t = await getTranslations();
-  const [{ data: deals }, { count: pending }] = await Promise.all([
+  const [{ data: deals }, { count: pendingEvents }, { count: pendingSpaces }] = await Promise.all([
     supabase.from("deals").select("status, agreed_price_aed, commission_aed"),
     supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "pending_review"),
+    supabase.from("ad_spaces").select("id", { count: "exact", head: true }).eq("status", "pending_review"),
   ]);
   const live = (deals ?? []).filter((d) => d.status !== "cancelled");
   const sum = (rows: typeof live, key: "agreed_price_aed" | "commission_aed") =>
@@ -88,10 +91,11 @@ async function Overview({ supabase, locale }: Props) {
       value: formatAed(sum(live.filter((d) => d.status !== "organizer_paid"), "commission_aed"), locale),
     },
     { label: t("admin.openDeals"), value: String(live.filter((d) => d.status !== "organizer_paid").length) },
-    { label: t("admin.pendingEvents"), value: String(pending ?? 0) },
+    { label: t("admin.pendingEvents"), value: String(pendingEvents ?? 0) },
+    { label: t("admin.pendingSpaces"), value: String(pendingSpaces ?? 0) },
   ];
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {stats.map((s) => (
         <Card key={s.label}>
           <p className="text-xs text-navy-500">{s.label}</p>
@@ -140,6 +144,44 @@ async function EventsTab({ supabase, locale }: Props) {
   );
 }
 
+async function SpacesTab({ supabase, locale }: Props) {
+  const t = await getTranslations();
+  const { data: spaces } = await supabase
+    .from("ad_spaces")
+    .select("*, owner:profiles!ad_spaces_owner_id_fkey(company_name, verified)")
+    .eq("status", "pending_review")
+    .order("created_at")
+    .returns<(AdSpaceRow & { owner: { company_name: string | null; verified: boolean } | null })[]>();
+  if (!spaces?.length) return <Card>{t("admin.nothingPending")}</Card>;
+  return (
+    <div className="space-y-4">
+      {spaces.map((s) => (
+        <Card key={s.id} className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <Link href={`/spaces/${s.id}`} className="text-lg font-semibold underline">
+              {pick(s, "title", locale)}
+            </Link>
+            <p className="text-sm text-navy-500">
+              {s.owner?.company_name} {s.owner?.verified ? "✓" : `(${t("admin.verify")}?)`} · {t(`spaceTypes.${s.type}`)} ·{" "}
+              {t(`emirates.${s.emirate as "Dubai"}`)} · {t("spaces.perWeek", { price: formatAed(s.price_per_week_aed, locale) })}
+            </p>
+          </div>
+          <form action={reviewSpace} className="flex flex-wrap items-end gap-2">
+            <input type="hidden" name="id" value={s.id} />
+            <Input name="reason" placeholder={t("admin.rejectReason")} className="w-56" />
+            <SubmitButton variant="danger" name="intent" value="reject">
+              {t("admin.reject")}
+            </SubmitButton>
+            <SubmitButton name="intent" value="approve">
+              {t("admin.approve")}
+            </SubmitButton>
+          </form>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
 async function CompaniesTab({ supabase, locale }: Props) {
   const t = await getTranslations();
   const { data: companies } = await supabase
@@ -167,7 +209,11 @@ async function CompaniesTab({ supabase, locale }: Props) {
               <td className="px-4 py-3 font-medium">
                 {c.company_name ?? "—"} {c.verified && <Badge tone="green">{t("common.verified")}</Badge>}
               </td>
-              <td className="px-4 py-3">{c.role === "organizer" ? t("auth.roleOrganizer") : t("auth.roleSponsor")}</td>
+              <td className="px-4 py-3">{c.role === "organizer"
+                  ? t("auth.roleOrganizer")
+                  : c.role === "media_owner"
+                    ? t("auth.roleMediaOwner")
+                    : t("auth.roleSponsor")}</td>
               <td className="px-4 py-3">{c.company_type ? t(`companyTypes.${c.company_type as "other"}`) : "—"}</td>
               <td className="px-4 py-3">{formatDate(c.created_at, locale)}</td>
               <td className="px-4 py-3 text-end">
@@ -206,7 +252,7 @@ async function DealsTab({ supabase, locale }: Props) {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <Link href={`/deals/${d.id}`} className="font-semibold underline">
-                  {d.package?.tier_name} · {d.event ? pick(d.event, "title", locale) : ""}
+                  {dealSubtitle(d, (n) => t("spaces.weeks", { count: n }))} · {dealTitle(d, locale)}
                 </Link>
                 <p className="text-sm text-navy-500">
                   {d.sponsor?.company_name} → {d.organizer?.company_name} · {formatDateTime(d.created_at, locale)}

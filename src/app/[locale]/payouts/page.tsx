@@ -18,7 +18,7 @@ export default async function PayoutsPage({
   const { locale } = await params;
   setRequestLocale(locale as Locale);
   const { error } = await searchParams;
-  const { supabase, user } = await requireUser(locale, ["organizer"]);
+  const { supabase, user } = await requireUser(locale, ["organizer", "media_owner"]);
   const t = await getTranslations("payouts");
   const stripe = getStripe();
 

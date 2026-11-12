@@ -23,7 +23,7 @@ export default async function LoginPage({
       <Card>
         <h1 className="mb-6 text-2xl font-bold">{t("loginTitle")}</h1>
         <Flash
-          error={error ? (error === "invalid" ? t("invalid") : error) : undefined}
+          error={error ? (error === "invalid" || error === "unconfirmed" ? t(error) : error) : undefined}
           ok={ok === "checkEmail" ? t("checkEmail") : undefined}
         />
         <form action={signIn} className="space-y-4">

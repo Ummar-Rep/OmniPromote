@@ -13,13 +13,18 @@ export async function signIn(form: FormData) {
     email: str(form, "email") ?? "",
     password: (form.get("password") as string) ?? "",
   });
-  if (error) redirect({ href: { pathname: "/login", query: { error: "invalid" } }, locale });
+  if (error) {
+    // Supabase returns "email_not_confirmed" when the account exists but the email link was never clicked.
+    const code = error.code === "email_not_confirmed" || /not confirmed/i.test(error.message) ? "unconfirmed" : "invalid";
+    redirect({ href: { pathname: "/login", query: { error: code } }, locale });
+  }
   redirect({ href: "/dashboard", locale });
 }
 
 export async function signUp(form: FormData) {
   const locale = await getLocale();
-  const role = str(form, "role") === "organizer" ? "organizer" : "sponsor";
+  const picked = str(form, "role");
+  const role = picked === "organizer" || picked === "media_owner" ? picked : "sponsor";
   if (form.get("terms") !== "on") {
     redirect({ href: { pathname: "/signup", query: { error: "terms", role } }, locale });
   }

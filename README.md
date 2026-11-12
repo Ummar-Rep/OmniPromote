@@ -1,7 +1,7 @@
 # OmniPromote
 
-A UAE marketplace that connects **event organizers** with **sponsors**, in English and Arabic.
-Phases done: **1. Event sponsorship** and **2. Online payments**.
+A UAE marketplace that connects **event organizers** and **billboard / screen owners** with **sponsors and brands**, in English and Arabic.
+Phases done: **1. Event sponsorship**, **2. Online payments** and **3. Billboards and screens**.
 
 Built with Next.js 15, Tailwind CSS, Supabase (database, login, file storage) and next-intl (English/Arabic).
 
@@ -30,6 +30,19 @@ Built with Next.js 15, Tailwind CSS, Supabase (database, login, file storage) an
   automatically by a daily job.
 - **Refunds**: cancelling a card-paid deal refunds the sponsor automatically.
 
+## What Phase 3 adds
+
+- **Media owners**: a third account type for billboard, screen, mall, airport and transit ad space owners.
+- **Ad space listings** with a map pin (click the map or paste coordinates), size, daily impressions, weekly price,
+  minimum weeks and photos. Admin reviews each listing before it goes live (**Admin → Ad spaces**).
+- **Map search** (OpenStreetMap, no API key needed) with filters for emirate, type, digital only, max weekly price and
+  free dates.
+- **Booking requests**: a brand picks a start date and number of weeks, can offer a different total, and chats with the
+  owner (contacts hidden). Dates that are already booked are blocked automatically.
+- When the owner accepts, it becomes a normal **deal**: same invoice, card or bank payment, proof, approval and payout
+  as event sponsorships. Founding Partner (0% on the first deal) applies to media owners too.
+- Login now says clearly when an email address has not been confirmed yet.
+
 ## Set up (about 20 minutes)
 
 ### 1. Install tools
@@ -39,9 +52,11 @@ Built with Next.js 15, Tailwind CSS, Supabase (database, login, file storage) an
 ### 2. Create the database
 1. In Supabase, create a new project (region: closest to UAE, e.g. Frankfurt or Mumbai).
 2. Open **SQL Editor**, paste everything from `supabase/migrations/20261107000001_phase1_sponsorship.sql`, and run it.
-   Then do the same with `supabase/migrations/20261107000002_phase2_payments.sql`.
-3. (Optional demo data) Paste and run `supabase/seed.sql`. It adds 10 sample UAE events and three demo logins
-   (password `Demo1234!`): `organizer1@demo.omnipromote.ae`, `organizer2@demo.omnipromote.ae`, `sponsor@demo.omnipromote.ae`.
+   Then do the same with `supabase/migrations/20261107000002_phase2_payments.sql`, and then
+   `supabase/migrations/20261112000003_phase3_ad_spaces.sql`.
+3. (Optional demo data) Paste and run `supabase/seed.sql`. It adds 10 sample UAE events, 8 ad spaces and four demo logins
+   (password `Demo1234!`): `organizer1@demo.omnipromote.ae`, `organizer2@demo.omnipromote.ae`, `sponsor@demo.omnipromote.ae`,
+   `media@demo.omnipromote.ae`.
 4. In **Authentication → URL Configuration**, set Site URL to `http://localhost:3000` and add
    `http://localhost:3000/auth/callback` to Redirect URLs (add your real domain later too).
 5. (Optional) Turn on Google login in **Authentication → Providers → Google**.
@@ -114,7 +129,6 @@ Security rules live in the database (Row Level Security), so users cannot publis
 change commission, see the other side's contacts early, or make themselves admin, even by calling the API directly.
 
 ## Next phases
-3. Billboards and digital screens with map search
 4. Influencer marketing through partner agencies
 5. Featured listings, subscriptions, reviews, analytics
 

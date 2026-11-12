@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
-import { formatAed, formatDate, formatDateTime, pick } from "@/lib/format";
-import { DEAL_SELECT, type DealJoined } from "@/lib/queries";
+import { formatAed, formatDate, formatDateTime } from "@/lib/format";
+import { DEAL_SELECT, dealStartDate, dealSubtitle, dealTitle, type DealJoined } from "@/lib/queries";
 import type { InvoiceRow, ProfileContacts, SettingsRow } from "@/lib/types";
 import { Card, Field, Input, Notice, Textarea, buttonClass } from "@/components/ui";
 import { SubmitButton } from "@/components/SubmitButton";
@@ -59,7 +59,10 @@ export default async function DealPage({
   }
 
   const stepIndex = ORDER.indexOf(deal.status === "disputed" ? "proof_uploaded" : deal.status);
-  const steps = [t("deal.step1"), t("deal.step2"), t("deal.step3"), t("deal.step4"), t("deal.step5")];
+  const isBooking = deal.booking_id !== null;
+  const steps = isBooking
+    ? [t("deal.step1Booking"), t("deal.step2"), t("deal.step3Booking"), t("deal.step4"), t("deal.step5Booking")]
+    : [t("deal.step1"), t("deal.step2"), t("deal.step3"), t("deal.step4"), t("deal.step5")];
   const sponsorInvoice = invoices?.find((i) => i.type === "sponsor_invoice");
   const statement = invoices?.find((i) => i.type === "organizer_statement");
   const pct = (n: number) => String(Math.round(Number(n) * 10000) / 100);
@@ -92,11 +95,11 @@ export default async function DealPage({
         <div>
           <p className="text-sm text-navy-500">{t("deal.title")}</p>
           <h1 className="text-2xl font-bold">
-            {deal.package?.tier_name} · {deal.event ? pick(deal.event, "title", locale) : ""}
+            {dealSubtitle(deal, (n) => t("spaces.weeks", { count: n }))} · {dealTitle(deal, locale)}
           </h1>
           <p className="text-sm text-navy-500">
             {deal.sponsor?.company_name} → {deal.organizer?.company_name}
-            {deal.event && ` · ${formatDate(deal.event.start_date, locale)}`}
+            {dealStartDate(deal) && ` · ${formatDate(dealStartDate(deal), locale)}`}
           </p>
         </div>
         <DealBadge status={deal.status} />
@@ -254,7 +257,10 @@ export default async function DealPage({
                   {t("deal.statement")} · {statement.number}
                 </Link>
               )}
-              <Link href={`/proposals/${deal.proposal_id}`} className="text-center text-navy-700 underline">
+              <Link
+                href={isBooking ? `/bookings/${deal.booking_id}` : `/proposals/${deal.proposal_id}`}
+                className="text-center text-navy-700 underline"
+              >
                 {t("proposal.chat")}
               </Link>
             </div>
