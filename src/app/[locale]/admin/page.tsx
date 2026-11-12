@@ -4,19 +4,20 @@ import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
 import { formatAed, formatDate, formatDateTime, pick } from "@/lib/format";
 import { DEAL_SELECT, dealSubtitle, dealTitle, type DealJoined } from "@/lib/queries";
-import type { AdSpaceRow, EventRow, Profile, SettingsRow } from "@/lib/types";
+import type { AdSpaceRow, EventRow, InfluencerHandles, InfluencerRow, Profile, SettingsRow } from "@/lib/types";
 import { Badge, Card, Field, Input, PageHeader } from "@/components/ui";
 import { SubmitButton } from "@/components/SubmitButton";
 import { DealBadge } from "@/components/StatusBadges";
 import { Flash } from "@/components/Flash";
-import { dealAction, reviewEvent, reviewSpace, saveSettings, setVerified } from "./actions";
+import { dealAction, reviewEvent, reviewInfluencer, reviewSpace, saveSettings, setVerified } from "./actions";
 
-const TABS = ["overview", "events", "spaces", "companies", "deals", "attempts", "settings"] as const;
+const TABS = ["overview", "events", "spaces", "influencers", "companies", "deals", "attempts", "settings"] as const;
 type Tab = (typeof TABS)[number];
 const TAB_LABEL = {
   overview: "tabOverview",
   events: "tabEvents",
   spaces: "tabSpaces",
+  influencers: "tabInfluencers",
   companies: "tabCompanies",
   deals: "tabDeals",
   attempts: "tabAttempts",
@@ -57,6 +58,7 @@ export default async function AdminPage({
       {tab === "overview" && <Overview supabase={supabase} locale={locale} />}
       {tab === "events" && <EventsTab supabase={supabase} locale={locale} />}
       {tab === "spaces" && <SpacesTab supabase={supabase} locale={locale} />}
+      {tab === "influencers" && <InfluencersTab supabase={supabase} locale={locale} />}
       {tab === "companies" && <CompaniesTab supabase={supabase} locale={locale} />}
       {tab === "deals" && <DealsTab supabase={supabase} locale={locale} />}
       {tab === "attempts" && <AttemptsTab supabase={supabase} locale={locale} />}
@@ -72,10 +74,11 @@ type Props = {
 
 async function Overview({ supabase, locale }: Props) {
   const t = await getTranslations();
-  const [{ data: deals }, { count: pendingEvents }, { count: pendingSpaces }] = await Promise.all([
+  const [{ data: deals }, { count: pendingEvents }, { count: pendingSpaces }, { count: pendingInfluencers }] = await Promise.all([
     supabase.from("deals").select("status, agreed_price_aed, commission_aed"),
     supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "pending_review"),
     supabase.from("ad_spaces").select("id", { count: "exact", head: true }).eq("status", "pending_review"),
+    supabase.from("influencers").select("id", { count: "exact", head: true }).eq("status", "pending_review"),
   ]);
   const live = (deals ?? []).filter((d) => d.status !== "cancelled");
   const sum = (rows: typeof live, key: "agreed_price_aed" | "commission_aed") =>
@@ -93,6 +96,7 @@ async function Overview({ supabase, locale }: Props) {
     { label: t("admin.openDeals"), value: String(live.filter((d) => d.status !== "organizer_paid").length) },
     { label: t("admin.pendingEvents"), value: String(pendingEvents ?? 0) },
     { label: t("admin.pendingSpaces"), value: String(pendingSpaces ?? 0) },
+    { label: t("admin.pendingInfluencers"), value: String(pendingInfluencers ?? 0) },
   ];
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -182,6 +186,54 @@ async function SpacesTab({ supabase, locale }: Props) {
   );
 }
 
+async function InfluencersTab({ supabase }: Props) {
+  const t = await getTranslations();
+  const { data: rows } = await supabase
+    .from("influencers")
+    .select("*, agency:profiles!influencers_agency_id_fkey(company_name, verified), handles:influencer_handles(*)")
+    .eq("status", "pending_review")
+    .order("created_at")
+    .returns<
+      (InfluencerRow & {
+        agency: { company_name: string | null; verified: boolean } | null;
+        handles: InfluencerHandles | null;
+      })[]
+    >();
+  if (!rows?.length) return <Card>{t("admin.nothingPending")}</Card>;
+  return (
+    <div className="space-y-4">
+      {rows.map((i) => (
+        <Card key={i.id} className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <Link href={`/influencers/${i.id}`} className="text-lg font-semibold underline">
+              {i.name}
+            </Link>
+            <p className="text-sm text-navy-500">
+              {i.agency?.company_name} {i.agency?.verified ? "✓" : `(${t("admin.verify")}?)`} · {t(`niches.${i.niche}`)} ·{" "}
+              {t(`emirates.${i.emirate as "Dubai"}`)}
+            </p>
+            <p className="mt-1 text-xs text-navy-500" dir="ltr">
+              {[i.handles?.instagram, i.handles?.tiktok, i.handles?.youtube, i.handles?.snapchat].filter(Boolean).join(" · ") ||
+                "—"}
+            </p>
+            <p className="text-xs text-navy-500">{t("admin.checkHandles")}</p>
+          </div>
+          <form action={reviewInfluencer} className="flex flex-wrap items-end gap-2">
+            <input type="hidden" name="id" value={i.id} />
+            <Input name="reason" placeholder={t("admin.rejectReason")} className="w-56" />
+            <SubmitButton variant="danger" name="intent" value="reject">
+              {t("admin.reject")}
+            </SubmitButton>
+            <SubmitButton name="intent" value="approve">
+              {t("admin.approve")}
+            </SubmitButton>
+          </form>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
 async function CompaniesTab({ supabase, locale }: Props) {
   const t = await getTranslations();
   const { data: companies } = await supabase
@@ -213,7 +265,9 @@ async function CompaniesTab({ supabase, locale }: Props) {
                   ? t("auth.roleOrganizer")
                   : c.role === "media_owner"
                     ? t("auth.roleMediaOwner")
-                    : t("auth.roleSponsor")}</td>
+                    : c.role === "agency"
+                      ? t("auth.roleAgency")
+                      : t("auth.roleSponsor")}</td>
               <td className="px-4 py-3">{c.company_type ? t(`companyTypes.${c.company_type as "other"}`) : "—"}</td>
               <td className="px-4 py-3">{formatDate(c.created_at, locale)}</td>
               <td className="px-4 py-3 text-end">

@@ -38,3 +38,10 @@ export function pick(row: object, field: string, locale: string): string {
   if (locale === "ar" && typeof ar === "string" && ar.trim()) return ar;
   return typeof en === "string" ? en : "";
 }
+
+export function formatCompact(value: number | null | undefined, locale: string) {
+  if (value === null || value === undefined) return "";
+  return new Intl.NumberFormat(locale === "ar" ? "ar-AE" : "en", { notation: "compact", maximumFractionDigits: 1 }).format(
+    Number(value),
+  );
+}

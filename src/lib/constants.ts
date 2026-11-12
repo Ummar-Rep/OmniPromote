@@ -30,3 +30,11 @@ export const EMIRATE_CENTERS: Record<string, [number, number]> = {
   Fujairah: [25.1288, 56.3265],
 };
 export const UAE_CENTER: [number, number] = [24.9, 55.2];
+
+export const INFLUENCER_NICHES = [
+  "lifestyle", "fashion", "beauty", "food", "travel", "fitness", "family", "tech", "gaming", "auto", "business",
+  "health", "education", "other",
+] as const;
+
+export const PLATFORMS = ["instagram", "tiktok", "youtube", "snapchat"] as const;
+export const LANGUAGES = ["Arabic", "English", "Hindi", "Urdu", "Tagalog", "French", "Russian"] as const;

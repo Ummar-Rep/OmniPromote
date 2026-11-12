@@ -14,7 +14,8 @@
     "logout": "Log out",
     "language": "العربية",
     "payouts": "Payouts",
-    "spaces": "Billboards & screens"
+    "spaces": "Billboards & screens",
+    "influencers": "Influencers"
   },
   "footer": {
     "tagline": "The UAE marketplace for event sponsorship.",
@@ -142,7 +143,11 @@
     "spacesTitle": "Billboards and digital screens across the UAE",
     "spacesBody": "Find outdoor billboards, mall screens and airport displays on a map, check free dates and book them with one invoice.",
     "spacesCta": "Find ad spaces",
-    "spacesOwnerCta": "List your billboard or screen"
+    "spacesOwnerCta": "List your billboard or screen",
+    "influencersTitle": "Influencer campaigns through trusted agencies",
+    "influencersBody": "Find UAE influencers by niche, platform and audience. Send one brief, pay one invoice, and get proof the posts went live.",
+    "influencersCta": "Find influencers",
+    "influencersAgencyCta": "List your influencers"
   },
   "browse": {
     "title": "Events looking for sponsors",
@@ -205,7 +210,9 @@
     "invalid": "Email or password is incorrect.",
     "roleMediaOwner": "A billboard / screen owner",
     "roleMediaOwnerHint": "I want brands to book my ad spaces.",
-    "unconfirmed": "Please confirm your email first. Open the link we sent to your inbox (check spam too), then log in."
+    "unconfirmed": "Please confirm your email first. Open the link we sent to your inbox (check spam too), then log in.",
+    "roleAgency": "An influencer agency",
+    "roleAgencyHint": "I manage influencers and want brand campaigns for them."
   },
   "profile": {
     "title": "Company profile",
@@ -254,7 +261,16 @@
     "space": "Ad space",
     "noBookings": "No booking requests yet.",
     "listing": "Event or ad space",
-    "details": "Details"
+    "details": "Details",
+    "agencyTitle": "Your influencers",
+    "newInfluencer": "Add an influencer",
+    "browseInfluencersCta": "Find influencers",
+    "myInfluencers": "My influencers",
+    "noInfluencers": "You haven't added any influencers yet.",
+    "campaignsReceived": "Campaign requests received",
+    "campaignsSent": "Influencer campaigns",
+    "influencer": "Influencer",
+    "noCampaigns": "No campaign requests yet."
   },
   "eventForm": {
     "newTitle": "List a new event",
@@ -358,7 +374,11 @@
     "refunded": "Refunded to sponsor",
     "step1Booking": "Booking accepted",
     "step3Booking": "Campaign runs, media owner uploads proof",
-    "step5Booking": "Media owner is paid"
+    "step5Booking": "Media owner is paid",
+    "step1Campaign": "Campaign accepted",
+    "step3Campaign": "Posts go live, agency uploads proof",
+    "step5Campaign": "Agency is paid",
+    "influencerHandles": "Influencer accounts"
   },
   "invoice": {
     "taxInvoice": "Tax invoice",
@@ -383,7 +403,9 @@
     "print": "Print / save as PDF",
     "trn": "TRN",
     "bookingOf": "Ad space booking: {space}, {from} to {to}",
-    "payoutForBooking": "Payout for ad space booking: {space}, {from} to {to}"
+    "payoutForBooking": "Payout for ad space booking: {space}, {from} to {to}",
+    "campaignOf": "Influencer campaign: {influencer}, {deliverables}",
+    "payoutForCampaign": "Payout for influencer campaign: {influencer}, {deliverables}"
   },
   "admin": {
     "title": "Admin",
@@ -431,7 +453,10 @@
     "cancelRefundConfirm": "Cancel this deal and refund the sponsor's card payment?",
     "proofReviewDays": "Days to review proof",
     "tabSpaces": "Ad spaces",
-    "pendingSpaces": "Ad spaces to review"
+    "pendingSpaces": "Ad spaces to review",
+    "tabInfluencers": "Influencers",
+    "pendingInfluencers": "Influencers to review",
+    "checkHandles": "Open these accounts and check the follower numbers before approving."
   },
   "legal": {
     "draftNote": "Draft for legal review. Not legal advice."
@@ -541,5 +566,87 @@
     "listTotal": "Listed price for these weeks",
     "acceptConfirm": "Accepting books these dates and sends the brand an invoice from OmniPromote.",
     "decline": "Decline"
+  },
+  "niches": {
+    "lifestyle": "Lifestyle",
+    "fashion": "Fashion",
+    "beauty": "Beauty",
+    "food": "Food",
+    "travel": "Travel",
+    "fitness": "Fitness",
+    "family": "Family and parenting",
+    "tech": "Tech",
+    "gaming": "Gaming",
+    "auto": "Cars",
+    "business": "Business",
+    "health": "Health",
+    "education": "Education",
+    "other": "Other"
+  },
+  "platforms": {
+    "instagram": "Instagram",
+    "tiktok": "TikTok",
+    "youtube": "YouTube",
+    "snapchat": "Snapchat"
+  },
+  "languages": {
+    "Arabic": "Arabic",
+    "English": "English",
+    "Hindi": "Hindi",
+    "Urdu": "Urdu",
+    "Tagalog": "Tagalog",
+    "French": "French",
+    "Russian": "Russian"
+  },
+  "influencers": {
+    "title": "Influencers",
+    "subtitle": "UAE creators managed by verified agencies. Book them for your next campaign.",
+    "search": "Search by name, topic or audience",
+    "platform": "Platform",
+    "minFollowers": "Min followers on that platform",
+    "results": "{count, plural, =0 {No influencers found} one {# influencer} other {# influencers}}",
+    "totalReach": "{count} total followers",
+    "managedBy": "Managed by",
+    "rates": "Rates",
+    "ratesOnRequest": "Rates on request. Send your budget with your brief.",
+    "handlesHidden": "Social media handles are shared after your invoice is paid. This keeps every booking protected and on the record.",
+    "loginToBook": "Log in to see rates and send a campaign brief.",
+    "ownInfluencer": "This influencer is managed by your agency.",
+    "onlySponsors": "Only brand / sponsor accounts can book influencers.",
+    "requestTitle": "Send a campaign brief",
+    "requestHint": "The agency confirms with the influencer. You pay only after they accept.",
+    "deliverables": "What you need",
+    "deliverablesHint": "For example: 1 reel + 3 stories",
+    "goLive": "Go-live date",
+    "brief": "Campaign brief",
+    "budget": "Your budget (AED)",
+    "sendRequest": "Send campaign brief"
+  },
+  "influencerForm": {
+    "newTitle": "Add an influencer",
+    "newSubtitle": "Add an influencer your agency manages. Listing is free.",
+    "editTitle": "Edit influencer",
+    "name": "Display name",
+    "nameHint": "Use a public name, not a handle.",
+    "niche": "Main topic",
+    "bioEn": "About (English)",
+    "bioAr": "About (Arabic)",
+    "languages": "Content languages",
+    "followers": "Followers",
+    "handles": "Social media handles (private)",
+    "handlesHint": "Only our team sees these until a brand pays. We use them to check the follower numbers.",
+    "engagement": "Engagement rate (%)",
+    "pricePost": "Price per post (AED)",
+    "priceStory": "Price per story (AED)",
+    "priceVideo": "Price per reel / video (AED)",
+    "photo": "Profile photo",
+    "close": "Stop taking campaigns",
+    "delete": "Delete influencer"
+  },
+  "campaign": {
+    "title": "Campaign request",
+    "agency": "Agency",
+    "acceptConfirm": "Accepting confirms the campaign at this budget and sends the brand an invoice from OmniPromote.",
+    "counterHint": "Want a different price? Agree it in the chat, then ask the brand to withdraw and send a new brief with the new budget."
   }
 }

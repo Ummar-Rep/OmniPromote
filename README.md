@@ -1,7 +1,7 @@
 # OmniPromote
 
-A UAE marketplace that connects **event organizers** and **billboard / screen owners** with **sponsors and brands**, in English and Arabic.
-Phases done: **1. Event sponsorship**, **2. Online payments** and **3. Billboards and screens**.
+A UAE marketplace that connects **event organizers**, **billboard / screen owners** and **influencer agencies** with **sponsors and brands**, in English and Arabic.
+Phases done: **1. Event sponsorship**, **2. Online payments**, **3. Billboards and screens** and **4. Influencers**.
 
 Built with Next.js 15, Tailwind CSS, Supabase (database, login, file storage) and next-intl (English/Arabic).
 
@@ -43,6 +43,18 @@ Built with Next.js 15, Tailwind CSS, Supabase (database, login, file storage) an
   as event sponsorships. Founding Partner (0% on the first deal) applies to media owners too.
 - Login now says clearly when an email address has not been confirmed yet.
 
+## What Phase 4 adds
+
+- **Agency accounts**: influencer agencies (like your partner company) list the influencers they manage, with niche,
+  emirate, languages, followers per platform, engagement rate and rates per post, story and reel.
+- **Private handles**: the real Instagram/TikTok/YouTube/Snapchat handles are stored separately. Only the agency and the
+  admin see them, and a brand sees them only after paying its invoice, so brands cannot skip the platform.
+  Admin checks the handles before approving a profile (**Admin → Influencers**).
+- **Influencer search** with filters for niche, emirate, platform, minimum followers, language and budget.
+- **Campaign briefs**: a brand sends deliverables, go-live date, brief and budget, then chats with the agency (contacts hidden).
+  When the agency accepts, it becomes a normal **deal** with invoice, payment, proof and payout, and commission is
+  taken from the agency like other providers.
+
 ## Set up (about 20 minutes)
 
 ### 1. Install tools
@@ -53,10 +65,10 @@ Built with Next.js 15, Tailwind CSS, Supabase (database, login, file storage) an
 1. In Supabase, create a new project (region: closest to UAE, e.g. Frankfurt or Mumbai).
 2. Open **SQL Editor**, paste everything from `supabase/migrations/20261107000001_phase1_sponsorship.sql`, and run it.
    Then do the same with `supabase/migrations/20261107000002_phase2_payments.sql`, and then
-   `supabase/migrations/20261112000003_phase3_ad_spaces.sql`.
-3. (Optional demo data) Paste and run `supabase/seed.sql`. It adds 10 sample UAE events, 8 ad spaces and four demo logins
+   `supabase/migrations/20261112000003_phase3_ad_spaces.sql` and `supabase/migrations/20261112000004_phase4_influencers.sql`.
+3. (Optional demo data) Paste and run `supabase/seed.sql`. It adds 10 sample UAE events, 8 ad spaces, 8 influencers and five demo logins
    (password `Demo1234!`): `organizer1@demo.omnipromote.ae`, `organizer2@demo.omnipromote.ae`, `sponsor@demo.omnipromote.ae`,
-   `media@demo.omnipromote.ae`.
+   `media@demo.omnipromote.ae`, `agency@demo.omnipromote.ae`.
 4. In **Authentication → URL Configuration**, set Site URL to `http://localhost:3000` and add
    `http://localhost:3000/auth/callback` to Redirect URLs (add your real domain later too).
 5. (Optional) Turn on Google login in **Authentication → Providers → Google**.
@@ -129,7 +141,6 @@ Security rules live in the database (Row Level Security), so users cannot publis
 change commission, see the other side's contacts early, or make themselves admin, even by calling the API directly.
 
 ## Next phases
-4. Influencer marketing through partner agencies
 5. Featured listings, subscriptions, reviews, analytics
 
 > Legal pages (Terms, Privacy) are drafts. Have a UAE lawyer review them before launch.

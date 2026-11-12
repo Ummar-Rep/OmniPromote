@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (!error) {
       // New Google users choose organizer/sponsor on the signup page before continuing.
       const role = searchParams.get("role");
-      if (role === "organizer" || role === "sponsor" || role === "media_owner") {
+      if (role === "organizer" || role === "sponsor" || role === "media_owner" || role === "agency") {
         const {
           data: { user },
         } = await supabase.auth.getUser();

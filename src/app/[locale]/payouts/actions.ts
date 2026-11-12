@@ -12,7 +12,7 @@ import { siteOrigin } from "@/lib/site";
 export async function startPayoutSetup() {
   const locale = await getLocale();
   const { supabase, user, profile } = await getSession();
-  if (!user || (profile?.role !== "organizer" && profile?.role !== "media_owner")) return redirect({ href: "/dashboard", locale });
+  if (!user || !profile || !["organizer", "media_owner", "agency"].includes(profile.role)) return redirect({ href: "/dashboard", locale });
 
   const stripe = getStripe();
   const admin = createAdminClient();

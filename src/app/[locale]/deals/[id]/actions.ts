@@ -84,7 +84,7 @@ export async function payByCard(form: FormData) {
   const { data: deal } = await supabase
     .from("deals")
     .select(
-      "id, sponsor_id, status, total_due_aed, booking_id, event:events(title_en), package:sponsorship_packages(tier_name), space:ad_spaces(title_en), booking:ad_bookings(weeks)",
+      "id, sponsor_id, status, total_due_aed, booking_id, event:events(title_en), package:sponsorship_packages(tier_name), space:ad_spaces(title_en), booking:ad_bookings(weeks), influencer:influencers(name), campaign:campaign_requests(deliverables)",
     )
     .eq("id", dealId)
     .single<{
@@ -97,6 +97,8 @@ export async function payByCard(form: FormData) {
       booking_id: string | null;
       space: { title_en: string } | null;
       booking: { weeks: number } | null;
+      influencer: { name: string } | null;
+      campaign: { deliverables: string } | null;
     }>();
   if (!deal || deal.sponsor_id !== user.id || deal.status !== "awaiting_sponsor_payment") {
     return redirect({ href: { pathname: back, query: { error: "notPayable" } }, locale });
@@ -122,7 +124,9 @@ export async function payByCard(form: FormData) {
           currency: "aed",
           unit_amount: toFils(deal.total_due_aed),
           product_data: {
-            name: (deal.booking_id
+            name: (deal.influencer
+              ? `Influencer campaign: ${deal.influencer.name} – ${deal.campaign?.deliverables ?? ""}`
+              : deal.booking_id
               ? `Ad space booking: ${deal.space?.title_en ?? ""} (${deal.booking?.weeks ?? ""} weeks)`
               : `Sponsorship: ${deal.package?.tier_name ?? ""} – ${deal.event?.title_en ?? ""}`
             ).slice(0, 250),

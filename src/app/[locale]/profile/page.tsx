@@ -46,6 +46,7 @@ export default async function ProfilePage({
                 <option value="sponsor">{t("auth.roleSponsor")}</option>
                 <option value="organizer">{t("auth.roleOrganizer")}</option>
                 <option value="media_owner">{t("auth.roleMediaOwner")}</option>
+                <option value="agency">{t("auth.roleAgency")}</option>
               </Select>
             </Field>
           )}
