@@ -30,7 +30,7 @@ export async function saveProfile(form: FormData) {
   };
   // Role can only be picked before the profile is completed (enforced in the database too).
   const role = str(form, "role");
-  if (!profile.onboarded && (role === "organizer" || role === "sponsor" || role === "media_owner")) update.role = role;
+  if (!profile.onboarded && (role === "organizer" || role === "sponsor" || role === "media_owner" || role === "agency")) update.role = role;
 
   const { error } = await supabase.from("profiles").update(update).eq("id", user.id);
   if (error) return redirect({ href: { pathname: "/profile", query: { error: error.message } }, locale });

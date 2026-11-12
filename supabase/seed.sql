@@ -1,6 +1,6 @@
--- Demo data: 2 organizers, 1 sponsor, 1 media owner, 10 published UAE events with packages, 8 ad spaces.
+-- Demo data: 2 organizers, 1 sponsor, 1 media owner, 1 agency, 10 events with packages, 8 ad spaces, 8 influencers.
 -- Demo logins (password for all: Demo1234!):
---   organizer1@demo.omnipromote.ae, organizer2@demo.omnipromote.ae, sponsor@demo.omnipromote.ae, media@demo.omnipromote.ae
+--   organizer1@demo.omnipromote.ae, organizer2@demo.omnipromote.ae, sponsor@demo.omnipromote.ae, media@demo.omnipromote.ae, agency@demo.omnipromote.ae
 -- Safe to run once on a fresh project (SQL editor or `supabase db reset`).
 
 do $$
@@ -219,3 +219,69 @@ values
    'Local residents and weekend visitors', 5000, 1,
    'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=1200', 'published')
 on conflict (id) do nothing;
+
+-- ───────────── Phase 4 demo: 1 partner agency and 8 influencers ─────────────
+-- Demo login: agency@demo.omnipromote.ae (password Demo1234!)
+insert into auth.users (
+  instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
+  raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+  confirmation_token, recovery_token, email_change, email_change_token_new
+) values (
+  '00000000-0000-0000-0000-000000000000', '55555555-5555-5555-5555-555555555555', 'authenticated', 'authenticated',
+  'agency@demo.omnipromote.ae', crypt('Demo1234!', gen_salt('bf')), now(),
+  '{"provider":"email","providers":["email"]}',
+  jsonb_build_object('role', 'agency', 'company_name', 'Desert Rose Talent'),
+  now(), now(), '', '', '', ''
+) on conflict (id) do nothing;
+
+insert into auth.identities (id, user_id, provider_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+values (gen_random_uuid(), '55555555-5555-5555-5555-555555555555', '55555555-5555-5555-5555-555555555555',
+        jsonb_build_object('sub', '55555555-5555-5555-5555-555555555555', 'email', 'agency@demo.omnipromote.ae', 'email_verified', true),
+        'email', now(), now(), now())
+on conflict do nothing;
+
+update public.profiles set verified = true, onboarded = true, emirate = 'Dubai', company_type = 'other'
+ where id = '55555555-5555-5555-5555-555555555555';
+
+insert into public.influencers (id, agency_id, name, bio_en, bio_ar, niche, emirate, languages,
+                                instagram_followers, tiktok_followers, youtube_followers, snapchat_followers,
+                                engagement_rate, audience_description, price_post_aed, price_story_aed, price_video_aed, status)
+values
+  ('b0000000-0000-0000-0000-000000000001', '55555555-5555-5555-5555-555555555555', 'Layla, Dubai lifestyle',
+   'Daily life, cafes and weekend plans in Dubai.', 'الحياة اليومية والمقاهي وخطط نهاية الأسبوع في دبي.',
+   'lifestyle', 'Dubai', '{English,Arabic}', 420000, 180000, null, 95000, 3.8,
+   'Women 22-35 in Dubai and Abu Dhabi', 9000, 3500, 15000, 'published'),
+  ('b0000000-0000-0000-0000-000000000002', '55555555-5555-5555-5555-555555555555', 'Chef Omar',
+   'Easy Emirati and Arab recipes, restaurant reviews.', 'وصفات إماراتية وعربية سهلة ومراجعات مطاعم.',
+   'food', 'Sharjah', '{Arabic,English}', 650000, 900000, 210000, null, 5.1,
+   'Families and food lovers across the GCC', 12000, 4000, 22000, 'published'),
+  ('b0000000-0000-0000-0000-000000000003', '55555555-5555-5555-5555-555555555555', 'Fit with Hessa',
+   'Home workouts, healthy eating and running events.', 'تمارين منزلية وأكل صحي وفعاليات جري.',
+   'fitness', 'Abu Dhabi', '{Arabic,English}', 230000, 310000, 45000, null, 6.2,
+   'Women 18-40 interested in health and sport', 6000, 2500, 10000, 'published'),
+  ('b0000000-0000-0000-0000-000000000004', '55555555-5555-5555-5555-555555555555', 'TechTalk Rashid',
+   'Gadget unboxings and honest reviews in Arabic.', 'فتح صناديق الأجهزة ومراجعات صادقة باللغة العربية.',
+   'tech', 'Dubai', '{Arabic}', 150000, 120000, 480000, null, 4.4,
+   'Men 18-34, tech buyers in the UAE and Saudi Arabia', 7000, 2000, 18000, 'published'),
+  ('b0000000-0000-0000-0000-000000000005', '55555555-5555-5555-5555-555555555555', 'Mama Noor',
+   'Parenting tips, family days out and kids activities.', 'نصائح للأمهات ونزهات عائلية وأنشطة للأطفال.',
+   'family', 'Ajman', '{Arabic,English}', 310000, 95000, null, 60000, 4.9,
+   'Mothers 25-45 in the Northern Emirates', 6500, 2500, 11000, 'published'),
+  ('b0000000-0000-0000-0000-000000000006', '55555555-5555-5555-5555-555555555555', 'Wanderlust Aisha',
+   'Staycations, hotels and hidden spots in the UAE.', 'إقامات قصيرة وفنادق وأماكن مخفية في الإمارات.',
+   'travel', 'Ras Al Khaimah', '{English,Arabic}', 280000, 140000, 60000, null, 3.5,
+   'Couples and young families who travel locally', 8000, 3000, 14000, 'published'),
+  ('b0000000-0000-0000-0000-000000000007', '55555555-5555-5555-5555-555555555555', 'Dr. Sami Health',
+   'A doctor explaining health topics in plain words.', 'طبيب يشرح المواضيع الصحية بكلمات بسيطة.',
+   'health', 'Dubai', '{Arabic,English}', 190000, 260000, 120000, null, 5.6,
+   'Adults 25-55 interested in health, parents', 8500, 3000, 16000, 'published'),
+  ('b0000000-0000-0000-0000-000000000008', '55555555-5555-5555-5555-555555555555', 'GamerKhalid',
+   'Live gaming streams and esports news.', 'بث مباشر للألعاب وأخبار الرياضات الإلكترونية.',
+   'gaming', 'Abu Dhabi', '{Arabic}', 90000, 410000, 350000, null, 7.0,
+   'Gamers 15-28 across the GCC', 5000, 1500, 12000, 'published')
+on conflict (id) do nothing;
+
+insert into public.influencer_handles (influencer_id, instagram, tiktok, youtube, snapchat)
+select id, '@demo_' || substr(id::text, 34), '@demo_' || substr(id::text, 34), null, null
+  from public.influencers where id::text like 'b0000000%'
+on conflict do nothing;

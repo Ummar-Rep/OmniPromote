@@ -25,6 +25,9 @@ export async function Header() {
           <Link href="/spaces" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
             {t("spaces")}
           </Link>
+          <Link href="/influencers" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
+            {t("influencers")}
+          </Link>
           {profile ? (
             <>
               <Link href="/dashboard" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
@@ -35,7 +38,7 @@ export async function Header() {
                   {t("admin")}
                 </Link>
               )}
-              {(profile.role === "organizer" || profile.role === "media_owner") && (
+              {["organizer", "media_owner", "agency"].includes(profile.role) && (
                 <Link href="/payouts" className="rounded-lg px-3 py-1.5 hover:bg-white/10">
                   {t("payouts")}
                 </Link>

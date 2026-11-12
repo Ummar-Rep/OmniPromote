@@ -77,6 +77,35 @@ export async function reviewSpace(form: FormData) {
   back(locale, "spaces", error?.message);
 }
 
+export async function reviewInfluencer(form: FormData) {
+  const { supabase, locale } = await adminSession();
+  const id = str(form, "id")!;
+  const approve = str(form, "intent") === "approve";
+  const { data, error } = await supabase
+    .from("influencers")
+    .update(
+      approve
+        ? { status: "published", rejection_reason: null }
+        : { status: "rejected", rejection_reason: str(form, "reason") ?? "Please review this profile." },
+    )
+    .eq("id", id)
+    .select("agency_id, name")
+    .single();
+  if (data) {
+    await notifyUser(
+      data.agency_id,
+      approve
+        ? { en: "Influencer profile is live", ar: "ملف المؤثر منشور الآن" }
+        : { en: "Influencer profile needs changes", ar: "ملف المؤثر يحتاج إلى تعديلات" },
+      approve
+        ? { en: `"${data.name}" is now visible to brands.`, ar: `أصبح "${data.name}" مرئيًا للمعلنين.` }
+        : { en: `Please update "${data.name}" and submit again.`, ar: `يرجى تعديل "${data.name}" وإرساله مجددًا.` },
+      `/dashboard/influencers/${id}`,
+    );
+  }
+  back(locale, "influencers", error?.message);
+}
+
 export async function setVerified(form: FormData) {
   const { supabase, locale } = await adminSession();
   const { error } = await supabase

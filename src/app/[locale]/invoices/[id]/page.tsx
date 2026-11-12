@@ -24,7 +24,9 @@ export default async function InvoicePage({ params }: { params: Promise<{ locale
   const isStatement = invoice.type === "organizer_statement";
   const party = isStatement ? deal.organizer : deal.sponsor;
   const name = dealTitle(deal, locale);
-  const description = deal.booking
+  const description = deal.campaign
+    ? t(isStatement ? "payoutForCampaign" : "campaignOf", { influencer: name, deliverables: deal.campaign.deliverables })
+    : deal.booking
     ? t(isStatement ? "payoutForBooking" : "bookingOf", {
         space: name,
         from: formatDate(deal.booking.start_date, locale),

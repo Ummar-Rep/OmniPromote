@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { requireUser } from "@/lib/auth";
 import { formatAed, formatDate, formatDateTime } from "@/lib/format";
 import { DEAL_SELECT, dealStartDate, dealSubtitle, dealTitle, type DealJoined } from "@/lib/queries";
-import type { InvoiceRow, ProfileContacts, SettingsRow } from "@/lib/types";
+import type { InfluencerHandles, InvoiceRow, ProfileContacts, SettingsRow } from "@/lib/types";
 import { Card, Field, Input, Notice, Textarea, buttonClass } from "@/components/ui";
 import { SubmitButton } from "@/components/SubmitButton";
 import { MaskedText } from "@/components/MaskedText";
@@ -60,9 +60,17 @@ export default async function DealPage({
 
   const stepIndex = ORDER.indexOf(deal.status === "disputed" ? "proof_uploaded" : deal.status);
   const isBooking = deal.booking_id !== null;
+  const isCampaign = deal.campaign_id !== null;
   const steps = isBooking
     ? [t("deal.step1Booking"), t("deal.step2"), t("deal.step3Booking"), t("deal.step4"), t("deal.step5Booking")]
-    : [t("deal.step1"), t("deal.step2"), t("deal.step3"), t("deal.step4"), t("deal.step5")];
+    : isCampaign
+      ? [t("deal.step1Campaign"), t("deal.step2"), t("deal.step3Campaign"), t("deal.step4"), t("deal.step5Campaign")]
+      : [t("deal.step1"), t("deal.step2"), t("deal.step3"), t("deal.step4"), t("deal.step5")];
+  // Influencer handles: readable by the database only once the brand has paid (or by the agency/admin).
+  const { data: handles } =
+    deal.influencer_id && deal.sponsor_paid_at
+      ? await supabase.from("influencer_handles").select("*").eq("influencer_id", deal.influencer_id).maybeSingle<InfluencerHandles>()
+      : { data: null };
   const sponsorInvoice = invoices?.find((i) => i.type === "sponsor_invoice");
   const statement = invoices?.find((i) => i.type === "organizer_statement");
   const pct = (n: number) => String(Math.round(Number(n) * 10000) / 100);
@@ -258,13 +266,35 @@ export default async function DealPage({
                 </Link>
               )}
               <Link
-                href={isBooking ? `/bookings/${deal.booking_id}` : `/proposals/${deal.proposal_id}`}
+                href={
+                  isBooking
+                    ? `/bookings/${deal.booking_id}`
+                    : isCampaign
+                      ? `/campaigns/${deal.campaign_id}`
+                      : `/proposals/${deal.proposal_id}`
+                }
                 className="text-center text-navy-700 underline"
               >
                 {t("proposal.chat")}
               </Link>
             </div>
           </Card>
+
+          {handles && (
+            <Card className="text-sm">
+              <h2 className="mb-2 font-semibold">{t("deal.influencerHandles")}</h2>
+              <dl className="space-y-1" dir="ltr">
+                {(["instagram", "tiktok", "youtube", "snapchat"] as const).map((p) =>
+                  handles[p] ? (
+                    <div key={p} className="flex justify-between gap-3">
+                      <dt className="text-navy-500">{t(`platforms.${p}`)}</dt>
+                      <dd className="font-medium">{handles[p]}</dd>
+                    </div>
+                  ) : null,
+                )}
+              </dl>
+            </Card>
+          )}
 
           <Card className="text-sm">
             <h2 className="mb-2 font-semibold">{t("deal.contacts")}</h2>

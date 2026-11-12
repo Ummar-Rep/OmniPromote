@@ -1,4 +1,4 @@
-export type UserRole = "organizer" | "sponsor" | "media_owner" | "admin";
+export type UserRole = "organizer" | "sponsor" | "media_owner" | "agency" | "admin";
 export type AdSpaceType =
   | "billboard" | "digital_screen" | "mall_screen" | "transit" | "airport" | "street_furniture" | "venue_screen" | "other";
 export type BookingStatus = "requested" | "accepted" | "declined" | "withdrawn";
@@ -83,6 +83,7 @@ export interface MessageRow {
   id: string;
   proposal_id: string | null;
   booking_id: string | null;
+  campaign_id: string | null;
   sender_id: string;
   body: string;
   was_masked: boolean;
@@ -96,6 +97,8 @@ export interface DealRow {
   event_id: string | null;
   booking_id: string | null;
   ad_space_id: string | null;
+  campaign_id: string | null;
+  influencer_id: string | null;
   sponsor_id: string;
   organizer_id: string;
   agreed_price_aed: number;
@@ -191,6 +194,55 @@ export interface BookingRow {
   end_date: string;
   message: string;
   offered_price_aed: number | null;
+  status: BookingStatus;
+  created_at: string;
+}
+
+export type InfluencerNiche =
+  | "lifestyle" | "fashion" | "beauty" | "food" | "travel" | "fitness" | "family" | "tech" | "gaming" | "auto"
+  | "business" | "health" | "education" | "other";
+
+export interface InfluencerRow {
+  id: string;
+  agency_id: string;
+  name: string;
+  bio_en: string;
+  bio_ar: string | null;
+  niche: InfluencerNiche;
+  emirate: string;
+  languages: string[];
+  instagram_followers: number | null;
+  tiktok_followers: number | null;
+  youtube_followers: number | null;
+  snapchat_followers: number | null;
+  engagement_rate: number | null;
+  audience_description: string | null;
+  price_post_aed: number | null;
+  price_story_aed: number | null;
+  price_video_aed: number | null;
+  avatar_url: string | null;
+  status: EventStatus;
+  rejection_reason: string | null;
+  created_at: string;
+}
+
+export interface InfluencerHandles {
+  influencer_id: string;
+  instagram: string | null;
+  tiktok: string | null;
+  youtube: string | null;
+  snapchat: string | null;
+}
+
+export interface CampaignRow {
+  id: string;
+  influencer_id: string;
+  buyer_id: string;
+  agency_id: string;
+  deliverables: string;
+  go_live_date: string;
+  brief: string;
+  offered_price_aed: number;
   status: BookingStatus;
   created_at: string;
 }

@@ -17,12 +17,13 @@ export default async function SignupPage({
   setRequestLocale(locale as Locale);
   const { error, role } = await searchParams;
   const t = await getTranslations("auth");
-  const defaultRole = role === "organizer" || role === "media_owner" ? role : "sponsor";
+  const defaultRole = role === "organizer" || role === "media_owner" || role === "agency" ? role : "sponsor";
 
   const roles = [
     { value: "sponsor", label: t("roleSponsor"), hint: t("roleSponsorHint") },
     { value: "organizer", label: t("roleOrganizer"), hint: t("roleOrganizerHint") },
     { value: "media_owner", label: t("roleMediaOwner"), hint: t("roleMediaOwnerHint") },
+    { value: "agency", label: t("roleAgency"), hint: t("roleAgencyHint") },
   ];
 
   return (

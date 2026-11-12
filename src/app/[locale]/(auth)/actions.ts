@@ -24,7 +24,7 @@ export async function signIn(form: FormData) {
 export async function signUp(form: FormData) {
   const locale = await getLocale();
   const picked = str(form, "role");
-  const role = picked === "organizer" || picked === "media_owner" ? picked : "sponsor";
+  const role = picked === "organizer" || picked === "media_owner" || picked === "agency" ? picked : "sponsor";
   if (form.get("terms") !== "on") {
     redirect({ href: { pathname: "/signup", query: { error: "terms", role } }, locale });
   }
